@@ -1,5 +1,3 @@
-"""Reglas reproducibles para preparar una fila por canción."""
-
 from dataclasses import dataclass
 
 import pandas as pd
@@ -30,8 +28,6 @@ INVARIANT_COLUMNS = (
 
 @dataclass(frozen=True)
 class PreparationSummary:
-    """Cuenta las decisiones aplicadas al construir el dataset procesado."""
-
     input_rows: int
     invalid_rows_removed: int
     output_rows: int
@@ -39,8 +35,6 @@ class PreparationSummary:
 
 
 def _invalid_rows(data: pd.DataFrame) -> pd.Series:
-    """Identifica registros que no representan una canción utilizable."""
-
     missing_text = data.loc[:, TEXT_COLUMNS].isna().any(axis=1)
     blank_text = (
         data.loc[:, TEXT_COLUMNS]
@@ -52,8 +46,6 @@ def _invalid_rows(data: pd.DataFrame) -> pd.Series:
 
 
 def _validate_invariant_attributes(data: pd.DataFrame) -> None:
-    """Impide consolidar IDs que contengan atributos musicales incompatibles."""
-
     counts = data.groupby("track_id", sort=False)[list(INVARIANT_COLUMNS)].nunique(dropna=False)
     conflicts = counts.gt(1).any(axis=1)
     if conflicts.any():
@@ -65,13 +57,6 @@ def _validate_invariant_attributes(data: pd.DataFrame) -> None:
 
 
 def prepare_modeling_dataset(data: pd.DataFrame) -> tuple[pd.DataFrame, PreparationSummary]:
-    """Limpia y consolida el dataset a una observación por ``track_id``.
-
-    Se descarta el índice exportado y los registros sin textos esenciales, popularidad o
-    duración positiva. Las múltiples asignaciones de género se preservan en
-    ``track_genres`` y la popularidad se resume con la mediana cuando el ID se repite.
-    """
-
     validate_schema(data)
     input_rows = len(data)
     cleaned = data.drop(columns="Unnamed: 0", errors="ignore").copy()

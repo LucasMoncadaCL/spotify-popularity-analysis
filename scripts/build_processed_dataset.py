@@ -1,13 +1,9 @@
-"""Construye el dataset limpio y consolidado para EDA y modelamiento."""
-
 from spotify_popularity.config import PROJECT_PATHS
 from spotify_popularity.data.loader import load_raw_dataset
 from spotify_popularity.data.preparation import prepare_modeling_dataset
 
 
 def main() -> None:
-    """Genera el CSV procesado sin modificar la fuente original."""
-
     PROJECT_PATHS.create_generated_directories()
     prepared, summary = prepare_modeling_dataset(load_raw_dataset())
     output_path = PROJECT_PATHS.data_processed / "spotify_tracks_clean.csv"
