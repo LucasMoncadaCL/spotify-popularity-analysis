@@ -1,0 +1,45 @@
+[project]
+name = "spotify-popularity-analysis"
+version = "0.1.0"
+description = "Análisis reproducible de popularidad musical con Spotify Tracks."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "matplotlib>=3.10,<4",
+    "numpy>=2.3,<3",
+    "pandas>=2.3,<3",
+    "scikit-learn>=1.7,<2",
+    "seaborn>=0.13,<0.14",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.30,<7",
+    "jupyterlab>=4.4,<5",
+    "nbclient>=0.10,<0.11",
+    "nbformat>=5.10,<6",
+    "pytest>=8.4,<9",
+    "ruff>=0.12,<0.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spotify_popularity"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
