@@ -41,6 +41,14 @@ rangos observados se verifican por separado en el notebook.
 - `Unnamed: 0` reproduce exactamente la secuencia de filas y no representa una propiedad
   musical.
 
+## Dataset procesado
+
+El archivo regenerable `data/processed/spotify_tracks_clean.csv` no contiene `Unnamed: 0`.
+También reemplaza `track_genre` por `track_genres`: una lista de etiquetas únicas, ordenadas y
+separadas por `|` para conservar que una misma canción puede pertenecer a más de un género.
+La columna `popularity` puede ser decimal porque se calcula su mediana al consolidar filas del
+mismo `track_id` con valores diferentes.
+
 ## Referencias
 
 - Dataset entregado por la asignatura: `data/raw/Spotify_Tracks_Dataset.csv`.
