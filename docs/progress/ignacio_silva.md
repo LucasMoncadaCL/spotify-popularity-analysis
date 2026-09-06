@@ -46,6 +46,7 @@ un modelo; se excluye solo de la versión procesada.
 
 La implementación reside en:
 
+- `notebooks/02_data_preparation.ipynb`: narrativa, evidencia y ejecución ordenada de la etapa.
 - `src/spotify_popularity/data/preparation.py`: reglas de limpieza, consolidación y resumen.
 - `scripts/build_processed_dataset.py`: punto de entrada reproducible.
 - `tests/test_data.py`: pruebas de la eliminación, consolidación y protección frente a
