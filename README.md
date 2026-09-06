@@ -84,9 +84,9 @@ puede exigir revisar decisiones anteriores.
 |---|---|---|---|
 | [`01_data_understanding.ipynb`](notebooks/01_data_understanding.ipynb) | Problema, objetivos, KPIs, fuente, CRISP-DM, descripción de variables, inspección inicial y primeras distribuciones. | Lucas Moncada | Completado. |
 | [Registro de avance de Lucas Moncada](docs/progress/lucas_moncada.md) | Decisiones, resultados verificados y entrega de hallazgos para la preparación de datos. | Lucas Moncada | Completado. |
-| Preparación de datos | Limpieza, reglas para duplicados y dataset procesado. | Equipo | Pendiente. |
-| EDA y análisis ético | Relaciones entre variables, segmentación, sesgos y privacidad. | Equipo | Pendiente. |
-| Modelamiento y evaluación | Línea base, modelos, métricas y conclusiones. | Equipo | Pendiente. |
+| Preparación de datos | Limpieza reproducible, tratamiento de anomalías, nulos y `track_id`, validación, transformaciones y construcción documentada del dataset procesado. | Ignacio Silva | Pendiente. |
+| EDA profundo, ética y conclusiones | Análisis de popularidad y variables relevantes, visualizaciones, interpretación de negocio, sesgos, privacidad, limitaciones y recomendaciones para modelamiento. | César Rojas | Pendiente. |
+| Modelamiento y evaluación | Línea base, modelos y métricas predictivas. | Equipo | Pendiente. |
 
 Esta tabla se actualizará cuando el equipo incorpore nuevas etapas; no se crean enlaces a
 archivos que todavía no existen.
