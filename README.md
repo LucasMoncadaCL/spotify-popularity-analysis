@@ -75,6 +75,9 @@ b202fa49909b2d5cef71a04b1d21243cfeb36414535f2ca9272aa646721177bd
 
 El diccionario completo está disponible en [`docs/data_dictionary.md`](docs/data_dictionary.md).
 
+Las reglas de trabajo del equipo están centralizadas en
+[`COLLABORATORS.md`](COLLABORATORS.md).
+
 ### Herramientas colaborativas y reproducibilidad
 
 | Herramienta | Uso y justificación | Estado actual |
