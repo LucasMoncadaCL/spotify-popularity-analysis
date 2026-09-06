@@ -1,188 +1,211 @@
 # Spotify Popularity Analysis
 
-**Responsable de comprensión del negocio, objetivos, KPIs, fuentes, colaboración y CRISP-DM:** Lucas Moncada.
+Proyecto académico de análisis de datos y Machine Learning orientado a estudiar qué
+características musicales y contextuales están asociadas con la popularidad de canciones en
+Spotify. El trabajo sigue la metodología CRISP-DM y prioriza la trazabilidad, la calidad de
+datos, el análisis exploratorio y la reproducibilidad exigidos en la Evaluación Parcial 1.
 
-Proyecto reproducible de Machine Learning para estudiar qué características musicales y
-contextuales están asociadas con la popularidad de canciones. El trabajo sigue CRISP-DM y
-prioriza preparación, calidad de datos, EDA y análisis ético según la rúbrica de la EP1.
+## Problema y propósito del proyecto
 
-## 1. Comprensión del problema de negocio
-
-La industria musical debe decidir qué canciones priorizar en campañas, playlists y acciones
-de promoción antes de conocer completamente su desempeño. Este proyecto estudia qué
-características musicales y contextuales están asociadas con la popularidad registrada en
-Spotify y hasta qué punto pueden aportar evidencia a esas decisiones.
-
-La pregunta central es:
+Artistas, sellos, equipos de marketing y curadores de contenido deben decidir qué canciones
+priorizar sin conocer completamente su desempeño futuro. El proyecto busca aportar evidencia
+para esas decisiones mediante la siguiente pregunta de negocio:
 
 > ¿Qué características musicales y contextuales están asociadas con la popularidad de una
-> canción y cómo puede esta información apoyar decisiones de artistas, sellos y equipos de
-> marketing musical?
+> canción y cómo puede esta información apoyar decisiones de promoción y gestión de catálogo?
 
-El análisis es descriptivo y predictivo, no causal. Una asociación no demuestra que modificar
-una característica produzca mayor popularidad.
+El objetivo general es analizar la relación entre los atributos disponibles y `popularity`,
+además de preparar una base confiable para evaluar posteriormente modelos de regresión. El
+análisis identifica asociaciones y patrones; no pretende demostrar relaciones causales.
 
-### Stakeholders y decisiones
+Los objetivos específicos del equipo son:
 
-- Artistas y sellos: priorización de lanzamientos y recursos promocionales.
-- Equipos de marketing: caracterización de segmentos y evaluación de campañas.
-- Curadores de contenido: comprensión de perfiles musicales y diversidad del catálogo.
-- Equipo analítico: preparación de una base reproducible para un futuro modelo de regresión.
+1. Comprender el contexto de negocio, los usuarios del análisis y sus necesidades.
+2. Examinar la estructura, procedencia y calidad del dataset.
+3. Preparar los datos con decisiones justificadas y reproducibles.
+4. Explorar patrones, relaciones, anomalías y posibles sesgos.
+5. Evaluar variables y modelos pertinentes para estimar popularidad.
+6. Comunicar resultados, limitaciones y consideraciones éticas de forma defendible.
 
-## 2. Objetivos
+## Dataset
 
-**Objetivo general:** analizar la relación entre los atributos de las canciones y su
-popularidad, preparando evidencia reproducible para una futura estimación de `popularity`.
-
-**Objetivos específicos:**
-
-1. Describir la estructura, procedencia y calidad inicial del dataset.
-2. Identificar distribuciones, anomalías y posibles sesgos de cobertura.
-3. Explorar variables acústicas y contextuales potencialmente relevantes.
-4. Preparar un flujo verificable para las etapas posteriores de limpieza y modelamiento.
-
-## 3. KPIs e indicadores
-
-| Tipo | Indicador | Propósito |
-|---|---|---|
-| Negocio | Popularidad promedio y mediana | Establecer el desempeño central del catálogo observado. |
-| Negocio | Proporción con popularidad ≥ 70 | Segmentar operativamente canciones de alta popularidad; el umbral se someterá a sensibilidad. |
-| Negocio | Popularidad por género | Comparar segmentos sin interpretar diferencias como efectos causales. |
-| Calidad | Completitud | Medir la proporción de celdas disponibles. |
-| Calidad | Duplicidad de `track_id` | Evitar conteos sesgados y futura fuga entre entrenamiento y prueba. |
-| Modelo futuro | MAE, RMSE y R² | Evaluar error y capacidad explicativa de una regresión posterior. |
-
-## 4. Fuente de datos y herramientas colaborativas
-
-### Fuente y alcance de los datos
-
-El archivo analizado fue proporcionado por la asignatura y se conserva sin modificaciones en
-`data/raw/Spotify_Tracks_Dataset.csv`. Su estructura coincide con el
+El archivo de trabajo fue proporcionado por la asignatura y se conserva sin modificaciones
+en `data/raw/Spotify_Tracks_Dataset.csv`. Su estructura coincide con el
 [Spotify Tracks Dataset publicado en Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset),
 atribuido a Maharshi Pandya y construido con metadatos y características de Spotify.
 
-La definición actual de `popularity` en la
+La variable de interés es `popularity`, medida en una escala de 0 a 100. La
 [documentación de Spotify](https://developer.spotify.com/documentation/web-api/reference/get-track)
-la sitúa entre 0 y 100 y señala que depende principalmente de reproducciones y recencia. El
-campo aparece actualmente como obsoleto en esa API, por lo que el dataset debe interpretarse
-como una fotografía histórica y no como una medición en tiempo real.
+indica que esta medida depende principalmente de reproducciones y recencia; actualmente el
+campo aparece como obsoleto en la API. Por ello, el dataset se interpreta como una fotografía
+histórica y no como información en tiempo real.
 
-La integridad del archivo se controla con SHA-256 mediante la biblioteca estándar `hashlib`:
+El archivo contiene 114.000 filas y 21 columnas antes de cualquier transformación. Su
+integridad se controla con SHA-256:
 
 ```text
 b202fa49909b2d5cef71a04b1d21243cfeb36414535f2ca9272aa646721177bd
 ```
 
-El diccionario completo está disponible en [`docs/data_dictionary.md`](docs/data_dictionary.md).
+El significado, tipo y rol esperado de cada campo se encuentra en el
+[diccionario de variables](docs/data_dictionary.md).
 
-Las reglas de trabajo del equipo están centralizadas en
-[`COLLABORATORS.md`](COLLABORATORS.md).
+## Indicadores de evaluación
 
-### Herramientas colaborativas y reproducibilidad
+El proyecto separa los indicadores descriptivos, de calidad y de desempeño predictivo para
+evitar confundir éxito de negocio con precisión técnica.
 
-| Herramienta | Uso y justificación | Estado actual |
+| Categoría | Indicador | Uso previsto |
 |---|---|---|
-| Git | Control de versiones, ramas y trazabilidad de cambios por integrante. | En uso y conectado con `origin`. |
-| GitHub | Repositorio remoto privado, revisión, respaldo e integración grupal. | En uso: [`LucasMoncadaCL/spotify-popularity-analysis`](https://github.com/LucasMoncadaCL/spotify-popularity-analysis). |
-| Jupyter Notebook | Une código, evidencia e interpretación en documentos ejecutables. | En uso. |
-| Markdown | Informe técnico legible, portable y versionable. | En uso. |
-| uv | Reproduce Python y dependencias mediante `pyproject.toml` y `uv.lock`. | En uso. |
+| Negocio | Popularidad promedio y mediana | Caracterizar el desempeño central del catálogo observado. |
+| Negocio | Proporción con popularidad ≥ 70 | Explorar un segmento operativo de alta popularidad; el umbral requiere análisis de sensibilidad. |
+| Negocio | Popularidad por género | Comparar segmentos sin interpretar diferencias como efectos causales. |
+| Calidad | Completitud | Cuantificar la disponibilidad de los datos. |
+| Calidad | Duplicidad de `track_id` | Prevenir conteos sesgados y futura fuga entre entrenamiento y prueba. |
+| Modelo | MAE, RMSE y R² | Evaluar el error y la capacidad explicativa de modelos de regresión. |
 
-El flujo acordado mantiene `main` para entregas estables, `dev` para integración y ramas
-temporales `feature/*`, `fix/*` y, solo cuando corresponda, `hotfix/*`. Los nombres técnicos
-de GitFlow se mantienen en inglés y los títulos y descripciones de los commits se escriben en
-español.
+## Metodología y estado
 
-## 5. Metodología CRISP-DM
+CRISP-DM se aplica de manera iterativa: un hallazgo de preparación, modelamiento o evaluación
+puede exigir revisar decisiones anteriores.
 
-| Fase | Aplicación al proyecto | Estado |
+| Fase CRISP-DM | Aplicación en el proyecto | Estado |
 |---|---|---|
-| Business Understanding | Problema, stakeholders, objetivos y KPIs. | Desarrollado por Lucas Moncada. |
-| Data Understanding | Fuente, variables, calidad preliminar y distribuciones. | Iniciado por Lucas Moncada. |
-| Data Preparation | Tratamiento del índice, nulos, anomalías y duplicidad por `track_id`. | Entrega al Integrante 2. |
-| Modeling | Entrenamiento de regresiones y alternativas justificadas. | Etapa posterior. |
-| Evaluation | MAE, RMSE y R², junto con utilidad y limitaciones de negocio. | Etapa posterior. |
-| Deployment | README, notebooks, datos y presentación reproducibles. | Entrega académica final. |
+| Business Understanding | Problema, stakeholders, objetivos e indicadores. | Completada inicialmente. |
+| Data Understanding | Fuente, variables, estructura, calidad preliminar y primeras distribuciones. | Completada inicialmente. |
+| Data Preparation | Tratamiento del índice exportado, nulos, anomalías y repetición de `track_id`. | Siguiente etapa. |
+| Modeling | Comparación de regresiones y alternativas justificadas. | Pendiente. |
+| Evaluation | Métricas técnicas, utilidad de negocio, sesgos y limitaciones. | Pendiente. |
+| Deployment | Informe, notebooks, datos y presentación reproducibles. | En construcción. |
 
-CRISP-DM se aplicará de forma iterativa: los resultados de preparación, modelamiento o
-evaluación pueden exigir revisar objetivos, variables y decisiones anteriores.
+### Entregables y responsables
 
-## 6. Descripción e inspección inicial del dataset
+| Entregable | Alcance | Responsable | Estado |
+|---|---|---|---|
+| [`01_data_understanding.ipynb`](notebooks/01_data_understanding.ipynb) | Problema, objetivos, KPIs, fuente, CRISP-DM, descripción de variables, inspección inicial y primeras distribuciones. | Lucas Moncada | Completado. |
+| [Registro de avance de Lucas Moncada](docs/progress/lucas_moncada.md) | Decisiones, resultados verificados y entrega de hallazgos para la preparación de datos. | Lucas Moncada | Completado. |
+| Preparación de datos | Limpieza, reglas para duplicados y dataset procesado. | Equipo | Pendiente. |
+| EDA y análisis ético | Relaciones entre variables, segmentación, sesgos y privacidad. | Equipo | Pendiente. |
+| Modelamiento y evaluación | Línea base, modelos, métricas y conclusiones. | Equipo | Pendiente. |
 
-| Evidencia | Resultado |
-|---|---:|
-| Dimensiones | 114.000 filas × 21 columnas |
-| Tipos | 9 `float64`, 6 `int64`, 5 `object`, 1 `bool` |
-| Celdas nulas | 3 |
-| Filas exactamente duplicadas | 0 |
-| `track_id` únicos | 89.741 |
-| IDs que aparecen más de una vez | 16.641 |
-| Filas asociadas a IDs repetidos | 40.900 |
-| Géneros | 114, exactamente 1.000 filas por género |
+Esta tabla se actualizará cuando el equipo incorpore nuevas etapas; no se crean enlaces a
+archivos que todavía no existen.
 
-La popularidad media es 33,24 y la mediana 35. El 14,05% de los registros tiene popularidad
-cero y el 4,8% alcanza al menos 70 puntos. Estos resultados describen las filas observadas;
-antes de realizar inferencia por canción deberá resolverse la repetición de `track_id`.
+## Resultados disponibles
 
-## Requisitos
+La comprensión inicial confirmó:
+
+- 114.000 registros y 21 variables.
+- 3 celdas nulas, concentradas en una misma fila anómala.
+- 0 filas exactamente duplicadas.
+- 89.741 valores únicos de `track_id`.
+- 16.641 IDs repetidos, asociados a 40.900 filas.
+- 114 géneros con 1.000 registros cada uno.
+- Popularidad media de 33,24 y mediana de 35.
+- 14,05% de los registros con popularidad 0 y 4,8% con popularidad igual o superior a 70.
+
+Estos resultados describen las filas observadas. Antes de formular conclusiones por canción o
+dividir datos para modelamiento, debe resolverse la repetición de `track_id`.
+
+## Instalación reproducible
+
+### Requisitos
 
 - [uv](https://docs.astral.sh/uv/)
-- Python 3.12 (uv lo instala automáticamente si no está disponible)
+- Git
 
-## Preparación del entorno
+El proyecto fija Python 3.12 y las versiones exactas de sus dependencias en `uv.lock`. Desde
+la raíz del repositorio:
 
 ```powershell
 uv sync
 ```
 
-No es necesario activar manualmente `.venv`: anteponga `uv run` a cada comando.
+No es necesario activar `.venv` manualmente: `uv run` ejecuta cada comando dentro del entorno
+del proyecto.
 
-## Comandos principales
+## Ejecución y verificación
 
 ```powershell
-# Verificar calidad del código y pruebas
+# Abrir los notebooks
+uv run jupyter lab
+
+# Generar la base intermedia sin modificar el archivo original
+uv run python scripts/build_base_dataset.py
+
+# Verificar estilo y pruebas automatizadas
 uv run ruff check .
 uv run ruff format --check .
 uv run pytest
-
-# Crear la versión base procesada sin alterar el archivo original
-uv run python scripts/build_base_dataset.py
-
-# Abrir los notebooks
-uv run jupyter lab
 ```
 
-Al abrir Jupyter mediante `uv run`, el notebook utiliza directamente el kernel `python3` del
-entorno del proyecto; no requiere instalar un kernel global en el equipo.
+Los notebooks se ejecutan en orden numérico. La lógica reutilizable se mantiene en `src/` y
+las celdas se concentran en la narrativa, las llamadas al paquete y la interpretación de
+resultados.
 
-## Estructura
+## Flujo de datos
+
+```text
+data/raw/
+    │  datos originales e inmutables
+    ▼
+data/interim/
+    │  resultados intermedios regenerables
+    ▼
+data/processed/
+    │  datos preparados para análisis y modelamiento
+    ├──────────────► reports/figures/
+    └──────────────► models/
+```
+
+Las transformaciones deben implementarse en `src/spotify_popularity/`, exponerse mediante
+scripts o notebooks y acompañarse de pruebas cuando contengan reglas reutilizables.
+
+## Estructura del repositorio
 
 ```text
 .
 ├── data/
-│   ├── raw/             # Datos originales, inmutables
-│   ├── interim/         # Resultados intermedios regenerables
-│   └── processed/       # Datos preparados para análisis/modelamiento
-├── docs/reference/      # Rúbrica y documentación de origen
-├── models/              # Modelos serializados (generados)
-├── notebooks/           # Experimentos y narrativa analítica numerada
-├── reports/figures/     # Gráficos exportados para informe/presentación
-├── scripts/             # Puntos de entrada ejecutables
-├── src/spotify_popularity/ # Paquete principal
-│   ├── config.py          # Configuración transversal
-│   ├── data/              # Carga, esquema, metadatos e integridad
-│   ├── analysis/          # Calidad y análisis descriptivo
-│   └── visualization/     # Distribuciones y estilo visual
-├── tests/               # Pruebas automatizadas
-├── pyproject.toml       # Dependencias y configuración de herramientas
-└── uv.lock              # Versiones exactas para reproducibilidad
+│   ├── raw/                    # Datos originales, inmutables
+│   ├── interim/                # Resultados intermedios regenerables
+│   └── processed/              # Datos preparados para análisis/modelamiento
+├── docs/
+│   ├── progress/               # Registro de avances y traspasos
+│   ├── reference/              # Rúbrica y documentación de origen
+│   └── data_dictionary.md      # Diccionario del dataset
+├── models/                     # Modelos serializados generados
+├── notebooks/                  # Análisis numerados en orden de ejecución
+├── reports/figures/            # Figuras para informe y presentación
+├── scripts/                    # Puntos de entrada ejecutables
+├── src/spotify_popularity/
+│   ├── config.py               # Configuración transversal
+│   ├── data/                   # Carga, esquema, metadatos e integridad
+│   ├── analysis/               # Calidad y análisis descriptivo
+│   └── visualization/          # Distribuciones y estilo visual
+├── tests/                      # Pruebas automatizadas
+├── COLLABORATORS.md            # Flujo de colaboración y GitFlow
+├── pyproject.toml              # Dependencias y herramientas
+└── uv.lock                     # Resolución exacta de dependencias
 ```
 
-## Convenciones
+## Colaboración
 
-- `data/raw/` nunca se modifica; toda salida se escribe en `data/interim/` o
-  `data/processed/`.
-- La lógica reutilizable pertenece a `src/`, no a los notebooks.
-- Los notebooks se numeran según su orden de ejecución.
-- Las rutas se resuelven desde la raíz del proyecto, evitando rutas absolutas personales.
-- Toda decisión de limpieza debe quedar justificada en el informe y en el notebook.
+El repositorio utiliza un GitFlow simplificado:
+
+- `main` contiene hitos estables.
+- `dev` integra cambios revisados.
+- `feature/*`, `fix/*` y `hotfix/*` contienen tareas acotadas.
+
+Los commits, Pull Requests y documentación se redactan en español; los nombres técnicos de
+GitFlow permanecen en inglés. Las reglas completas de ramas, notebooks, datos, validación e
+integración están en la [guía de colaboración](COLLABORATORS.md).
+
+## Limitaciones actuales
+
+- El dataset es estático y no representa el estado actual de Spotify.
+- `popularity` depende de factores temporales y comerciales que no están completamente
+  representados en las variables disponibles.
+- Un mismo `track_id` puede aparecer en más de una fila o género.
+- Los resultados descriptivos no permiten afirmar causalidad.
+- La preparación, el modelamiento y el análisis ético aún deben completarse antes de formular
+  conclusiones finales.
