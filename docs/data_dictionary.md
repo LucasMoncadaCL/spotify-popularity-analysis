@@ -46,4 +46,3 @@ rangos observados se verifican por separado en el notebook.
 - Dataset entregado por la asignatura: `data/raw/Spotify_Tracks_Dataset.csv`.
 - [Spotify Tracks Dataset de Maharshi Pandya en Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset).
 - [Spotify Web API — Track](https://developer.spotify.com/documentation/web-api/reference/get-track).
-

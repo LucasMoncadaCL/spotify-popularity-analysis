@@ -1,10 +1,10 @@
 # Progreso — Lucas Moncada
 
 **Responsabilidad principal:** problema de negocio, objetivos, KPIs, fuente de datos,
-herramientas colaborativas y metodología CRISP-DM.  
+herramientas colaborativas y metodología CRISP-DM.
 **Evidencia complementaria:** descripción del dataset, calidad preliminar y primeras
-distribuciones.  
-**Estado:** completado y documentado.  
+distribuciones.
+**Estado:** completado y documentado.
 **Fecha de actualización:** 2026-09-06.
 
 ## 1. Comprensión del problema de negocio

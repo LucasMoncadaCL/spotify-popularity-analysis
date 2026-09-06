@@ -168,4 +168,3 @@ Cuando el equipo complete y revise un hito:
 - No eliminar ni sobrescribir trabajo de otro integrante sin revisarlo con su autor.
 - Si una decisión cambia el significado de los datos, registrarla explícitamente.
 - Cuando una prueba falle, corregir la causa antes de solicitar integración.
-
