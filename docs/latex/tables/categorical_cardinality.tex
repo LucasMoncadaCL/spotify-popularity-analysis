@@ -1,0 +1,15 @@
+\begin{tabular}{lrrl}
+\toprule
+ & Valores unicos & Porcentaje sobre filas & Riesgo \\
+variable &  &  &  \\
+\midrule
+artists & 31437 & 35.031 & Alta cardinalidad y memorizacion \\
+album\_name & 46589 & 51.916 & Alta cardinalidad y memorizacion \\
+track\_name & 73608 & 82.024 & Alta cardinalidad y texto libre \\
+track\_genres & 1432 & 1.596 & Multietiqueta; combinaciones de etiquetas \\
+explicit & 2 & 0.002 & Desbalance y posibles variables de confusion \\
+key & 12 & 0.013 & Categoria nominal codificada como numero \\
+mode & 2 & 0.002 & Baja cardinalidad \\
+time\_signature & 5 & 0.006 & Categoria discreta con clases poco frecuentes \\
+\bottomrule
+\end{tabular}

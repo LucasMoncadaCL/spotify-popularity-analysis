@@ -1,0 +1,33 @@
+\section{Limitaciones y matriz de riesgos técnicos}
+
+Las principales limitaciones son: captura histórica sin fecha, objetivo dinámico e imperfecto,
+muestra balanceada artificialmente, variables contextuales ausentes, análisis observacional sin
+causalidad y falta de una evaluación fuera de muestra. También se desconoce si el conjunto cubre de
+forma homogénea regiones, periodos, idiomas y niveles de exposición.
+
+\begin{table}[H]
+\centering
+\caption{Matriz de riesgos ajustada a la evidencia disponible.}
+\label{tab:riesgos}
+\small
+\begin{tabularx}{\textwidth}{p{3.1cm}p{1.7cm}p{2cm}X}
+\toprule
+Riesgo & Impacto & Probabilidad & Mitigación \\
+\midrule
+Leakage o memorización por \code{track_id} & Alto & Alta si se incluye & Excluir del diseño; conservar para trazabilidad \\
+Memorización por artista & Alto & Alta & Comparar partición aleatoria con grupos por artista; controlar encoding \\
+Deriva temporal & Alto & Alta & Obtener fechas, validar temporalmente y monitorear desempeño \\
+Muestra no representativa & Alto & Alta & Limitar generalización; documentar cobertura y reponderar solo con marco válido \\
+Variables omitidas & Alto & Alta & Incorporar contexto trazable; no interpretar causalmente \\
+Multicolinealidad de audio & Medio & Alta & Escalar, regularizar y diagnosticar coeficientes \\
+Géneros multietiqueta & Medio & Alta & Multi-hot, soporte explícito y métricas no excluyentes \\
+Extremos válidos confundidos con errores & Medio & Media & Validación puntual y análisis de sensibilidad \\
+Desempeño desigual por segmentos & Alto & Media & Evaluar errores por género, explicit y artistas vistos/no vistos \\
+Sobreconfianza de negocio & Alto & Media & Revisión humana, documentación y límites de uso \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Probabilidad e impacto son evaluaciones cualitativas para priorizar controles, no frecuencias
+estimadas. Deben revisarse cuando existan particiones, modelo, datos temporales y contexto de uso
+concreto.

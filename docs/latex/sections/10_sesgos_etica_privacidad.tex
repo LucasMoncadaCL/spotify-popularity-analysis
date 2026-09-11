@@ -1,0 +1,70 @@
+\section{Sesgos, ética y privacidad}
+
+\subsection{Sesgo de muestreo}
+
+La fuente contiene exactamente 1.000 filas por cada uno de 114 géneros. Este balance facilita
+comparaciones, pero no representa la prevalencia natural de canciones ni de reproducciones en
+Spotify. Además, las canciones multigénero aparecen repetidas en el origen, por lo que estadísticas
+agregadas ponderan más a pistas con varias etiquetas. La consolidación corrige el doble conteo por
+canción, pero no reconstruye un muestreo aleatorio del catálogo completo.
+
+\subsection{Sesgo temporal}
+
+\code{popularity} depende de reproducciones y recencia \citep{spotify_track_api}. Al faltar fecha de
+extracción y lanzamiento, no es posible distinguir canciones nuevas en crecimiento de clásicos
+estables ni evaluar evolución. Un modelo entrenado en esta fotografía puede sufrir \emph{concept
+drift}: la relación entre atributos y popularidad cambia con tendencias, reglas de plataforma y
+audiencias.
+
+\subsection{Variables omitidas}
+
+No se observan inversión de marketing, exposición en playlists, viralidad, popularidad previa del
+artista, colaboraciones, región, fecha de lanzamiento, estacionalidad ni exposición externa. Estas
+variables podrían explicar simultáneamente atributos y popularidad, de modo que las correlaciones de
+audio no deben interpretarse como efectos. Su ausencia también fija un techo razonable a la capacidad
+predictiva.
+
+\subsection{Sesgo y memorización por artista}
+
+Hay 31.437 valores de \code{artists}. Una partición aleatoria puede dejar canciones del mismo artista
+en entrenamiento y prueba; el modelo reconocerá reputación histórica y aparentará generalizar mejor
+de lo que lo haría con artistas nuevos. Para estimar ese escenario se necesita validación agrupada por
+artista o una evaluación separada de artistas no vistos.
+
+\subsection{Sesgo por género y multietiqueta}
+
+Una canción puede contribuir a varias etiquetas en análisis expandidos. Comparar géneros como grupos
+excluyentes sería incorrecto, y un multi-hot puede aprender asociaciones del diseño de muestreo. Las
+métricas por género deben informar soporte, permitir pertenencia múltiple y evitar concluir que una
+etiqueta determina el desempeño.
+
+\subsection{Riesgos éticos}
+
+Una predicción puede reforzar artistas ya populares, favorecer estilos dominantes, reducir
+oportunidades de artistas nuevos y homogeneizar decisiones creativas. También puede confundirse
+probabilidad estimada con mérito artístico o usarse como regla automática de inversión. Una
+correlación como la de \code{instrumentalness} no autoriza recomendar eliminar elementos
+instrumentales: refleja esta muestra y puede estar mediada por géneros y exposición.
+
+Principios de uso responsable:
+
+\begin{itemize}
+\item usar el modelo como apoyo a decisión humana y documentar su propósito;
+\item comunicar incertidumbre, datos de entrenamiento y límites de generalización;
+\item revisar errores y cobertura por género, condición explícita y artistas vistos/no vistos;
+\item monitorear deriva y recalibrar solo con datos trazables;
+\item evitar asignaciones automáticas de presupuesto o promoción de alto impacto;
+\item preservar diversidad creativa y habilitar revisión de decisiones.
+\end{itemize}
+
+\subsection{Privacidad}
+
+El dataset contiene metadatos de canciones, nombres públicos de artistas y atributos musicales. No
+incluye directamente identidad, ubicación, perfiles ni historial de escucha de oyentes; el riesgo de
+privacidad individual es relativamente bajo frente a datos conductuales. Aun así, se mantiene
+trazabilidad, minimización y respeto por las condiciones de uso de la fuente.
+
+Si una etapa futura integra usuarios, playlists personales, ubicaciones o eventos de escucha, cambia
+materialmente el riesgo. Serían necesarios propósito y base legal definidos, minimización, controles
+de acceso, retención limitada, agregación o seudonimización, revisión de reidentificación y una
+evaluación de impacto antes del uso.

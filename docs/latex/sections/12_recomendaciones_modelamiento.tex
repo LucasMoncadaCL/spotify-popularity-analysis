@@ -1,0 +1,49 @@
+\clearpage
+\section{Recomendaciones para modelamiento e implicancias de negocio}
+
+\subsection{Clasificación de variables}
+
+\begin{table}[H]
+\centering
+\caption{Tratamiento recomendado antes de entrenar.}
+\label{tab:tratamiento-modelo}
+\begin{tabularx}{\textwidth}{p{3.2cm}p{3.2cm}X}
+\toprule
+Clasificación & Variables & Recomendación \\
+\midrule
+Target & \code{popularity} & Regresión; conservar escala 0--100 y analizar masa en cero \\
+Recomendadas & Atributos acústicos, \code{explicit} & Línea base y modelos regularizados; escalar cuando corresponda \\
+Transformación & \code{duration_ms}, extremos continuos & Comparar original con \code{log1p}; usar pipeline para evitar fuga \\
+Encoding & \code{track_genres}, \code{key}, \code{mode}, \code{time_signature} & Multi-hot para géneros; one-hot o codificación categórica para el resto \\
+Alta cardinalidad & \code{artists}, \code{album_name}, \code{track_name} & Excluir de línea base; evaluar después con validación estricta y propósito claro \\
+Excluir & \code{track_id} & Nunca predictor; usar solo como identificador y control \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El pipeline debe ajustar transformaciones solo con entrenamiento. Una línea base que prediga la
+mediana permite comprobar si modelos más complejos agregan valor. Después, una regresión lineal o
+Ridge ofrece interpretabilidad; alternativas no lineales pueden explorar curvaturas observadas, sin
+tuning excesivo en esta fase.
+
+La partición aleatoria es un punto de partida, pero debe complementarse con grupos por artista para
+medir generalización a identidades nuevas. Si se obtienen fechas, una partición temporal es más
+realista para predecir periodos posteriores. La unicidad actual de \code{track_id} evita una fuga
+directa, aunque no la dependencia entre canciones del mismo artista.
+
+MAE se interpreta como error medio en puntos; RMSE revela errores grandes; $R^2$ compara contra la
+media y puede ser bajo o negativo fuera de muestra. Deben presentarse intervalos mediante
+validación cruzada y métricas por segmentos. Un $R^2$ alto no demuestra causalidad, equidad ni
+utilidad operativa.
+
+\subsection{Implicancias de negocio}
+
+El análisis enseña que la popularidad no se explica mediante una regla acústica simple. Algunas
+variables contienen señal descriptiva y los géneros segmentan diferencias, pero factores de
+exposición probablemente faltan. Una futura estimación podría priorizar revisión humana, comparar
+segmentos o identificar casos donde convenga investigar contexto adicional.
+
+No puede afirmarse que cambiar energía, sonoridad, explicitud o instrumentalidad produzca éxito. La
+predicción debería acompañarse de información de incertidumbre y nunca determinar por sí sola
+presupuesto, lanzamiento o mérito artístico. La decisión útil combina evidencia cuantitativa,
+objetivos creativos, conocimiento del mercado y experimentación posterior.
