@@ -29,3 +29,10 @@ models/*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Artefactos auxiliares de LaTeX y revisión visual
+tmp/
+docs/latex/output/
+docs/latex/texput.log
+output/pdf/*
+!output/pdf/main.pdf

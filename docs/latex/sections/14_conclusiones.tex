@@ -1,0 +1,28 @@
+\section{Conclusiones}
+
+El proyecto dispone de una cadena reproducible desde una fuente raw preservada hasta un dataset
+analítico de 89.740 canciones únicas. La preparación resolvió la anomalía con nulos y duración cero,
+retiró el índice exportado, consolidó IDs y conservó géneros múltiples. Los controles posteriores
+confirman el contrato esperado y las pruebas automatizadas protegen la lógica central.
+
+El EDA demuestra que la popularidad se concentra en valores bajos y medios y que las asociaciones
+acústicas individuales son débiles. \code{instrumentalness} ofrece la señal de mayor magnitud, pero
+no determina el resultado. La redundancia entre energía, sonoridad y acousticness debe considerarse
+en modelos lineales. Las diferencias por explicitud y género son descriptivas, presentan
+solapamiento o sesgos de cobertura y no justifican afirmaciones causales.
+
+La robustez adicional confirma que el efecto estandarizado de \code{explicit} es pequeño, que el
+ranking principal de géneros no cambia entre soportes de 100, 200 y 500, y que artistas, álbumes y
+nombres tienen cardinalidad suficiente para introducir memorización. Los extremos se mantienen
+porque no existe evidencia general de error; se proponen transformaciones y validación de
+sensibilidad.
+
+Los límites más importantes son temporalidad desconocida, muestra no representativa, objetivo
+dinámico y variables contextuales omitidas. Estos límites acotan tanto la capacidad predictiva como
+la interpretación de negocio. Éticamente, una futura herramienta debe apoyar revisión humana,
+explicitar incertidumbre y evitar automatizar asignaciones de alto impacto.
+
+La siguiente etapa debe establecer una línea base de regresión, aplicar pipelines sin leakage,
+codificar categorías según su semántica y comparar particiones aleatorias, agrupadas por artista y,
+si se obtienen fechas, temporales. El éxito no consiste solo en reducir error global: requiere
+generalización defendible, desempeño por segmentos, utilidad real y uso responsable.

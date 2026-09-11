@@ -1,0 +1,45 @@
+\section{Fuente de datos}
+
+El archivo operativo es \code{data/raw/Spotify_Tracks_Dataset.csv}, proporcionado por la asignatura
+y preservado sin modificaciones. Su estructura coincide con el conjunto publicado por Maharshi
+Pandya en Kaggle \citep{pandya_dataset}. Esta coincidencia sustenta la descripción, pero la copia
+local y su trazabilidad son la fuente efectiva del análisis.
+
+El CSV original tiene 114.000 filas y 21 columnas. Incluye identificadores, artista, álbum, nombre
+de pista, género, contenido explícito, duración y atributos acústicos. La variable objetivo
+\code{popularity} está en escala 0--100. La documentación de Spotify la relaciona principalmente
+con reproducciones y recencia, y el campo aparece actualmente como obsoleto en la API
+\citep{spotify_track_api}. Se interpreta, por ello, como fotografía histórica y no como medición en
+tiempo real.
+
+La integridad de la copia raw se controla mediante SHA-256:
+
+\begin{verbatim}
+b202fa49909b2d5cef71a04b1d21243cfeb36414535f2ca9272aa646721177bd
+\end{verbatim}
+
+El diccionario completo está en \code{docs/data_dictionary.md}. En síntesis, los roles son:
+
+\begin{table}[H]
+\centering
+\caption{Grupos de variables de la fuente.}
+\label{tab:grupos-variables}
+\begin{tabularx}{\textwidth}{p{3cm}X p{3.2cm}}
+\toprule
+Grupo & Variables representativas & Rol \\
+\midrule
+Identificación & \code{track_id} & Trazabilidad; no predictor \\
+Contexto & \code{artists}, \code{album_name}, \code{track_name}, género & Segmentación y posible
+alta cardinalidad \\
+Audio & \code{danceability}, \code{energy}, \code{loudness}, \code{acousticness}, entre otras &
+Predictores candidatos \\
+Estructura musical & \code{key}, \code{mode}, \code{tempo}, \code{time_signature} & Predictores
+categóricos o continuos según significado \\
+Objetivo & \code{popularity} & Variable de respuesta histórica \\
+Técnica & \code{Unnamed: 0} & Índice exportado, retirado \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+No se documenta la fecha exacta de extracción, la cobertura regional ni las condiciones completas
+de muestreo. Esas ausencias limitan actualización, generalización temporal y representatividad.

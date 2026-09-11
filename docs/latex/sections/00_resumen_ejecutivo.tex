@@ -1,0 +1,55 @@
+\section{Resumen ejecutivo}
+
+Este proyecto estudia qué características musicales y contextuales están asociadas con la
+popularidad observada de canciones en Spotify. Su propósito es aportar evidencia para artistas,
+sellos, marketing, curadores y gestión de catálogo, sin presentar las asociaciones como causas ni
+como una receta de éxito. El trabajo sigue CRISP-DM y conserva trazabilidad mediante Git, notebooks
+ejecutables, funciones en Python, pruebas automatizadas y documentación de progreso.
+
+La fuente entregada por la asignatura contiene 114.000 filas y 21 columnas. No representa 114.000
+canciones diferentes: solo existen 89.741 valores únicos de \code{track_id}; 16.641 IDs aparecen
+más de una vez y generan 24.259 apariciones adicionales. Se detectaron tres celdas nulas, todas en
+una fila que además posee duración cero, y una columna técnica \code{Unnamed: 0} que reproduce el
+índice exportado. La distribución por género original contiene exactamente 1.000 filas para cada
+una de 114 etiquetas, indicio de un diseño de muestra balanceado y no de la prevalencia real del
+catálogo.
+
+La preparación retiró la columna técnica y la única fila inválida. Después consolidó cada
+\code{track_id}, verificando que sus atributos musicales y textuales fueran invariantes. Las
+etiquetas de género se conservaron como una lista ordenada separada por barras verticales en
+\code{track_genres}; cuando un ID presentaba diferentes valores históricos de popularidad, se usó
+la mediana. El resultado contiene 89.740 canciones únicas, 20 columnas, cero nulos, cero IDs
+duplicados y duración estrictamente positiva.
+
+\begin{table}[H]
+\centering
+\caption{Comparación reproducible del dataset antes y después de la preparación.}
+\label{tab:comparacion-resumen}
+\resizebox{\textwidth}{!}{\input{tables/dataset_comparison}}
+\end{table}
+
+El EDA procesado obtiene una popularidad media de 33,20, mediana de 33 y desviación estándar de
+20,58. El 10,47\% de las canciones tiene popularidad cero y el 3,48\% alcanza 70 o más. Ningún
+atributo acústico individual muestra una asociación fuerte con el objetivo. La mayor magnitud es
+\code{instrumentalness} (Pearson $-0{,}128$; Spearman $-0{,}124$); \code{loudness} y
+\code{danceability} presentan asociaciones positivas pequeñas. Entre predictores sí aparecen
+redundancias relevantes: \code{energy} con \code{loudness} ($0{,}759$) y con
+\code{acousticness} ($-0{,}733$).
+
+Las canciones marcadas como explícitas tienen una media 4,03 puntos superior y una mediana cuatro
+puntos superior, pero el tamaño de efecto estandarizado es pequeño ($d=0{,}196$). Esto distingue
+una diferencia visible en una muestra grande de una diferencia práctica considerable. El ranking
+por género es estable al exigir soportes mínimos de 100, 200 o 500 canciones, aunque esa estabilidad
+no corrige el muestreo artificialmente balanceado ni convierte las diferencias en efectos causales.
+
+Los riesgos principales son la falta de temporalidad, variables contextuales omitidas, posible
+memorización de artistas, leakage mediante identificadores, alta cardinalidad y deriva del concepto
+de popularidad. Éticamente, un modelo podría reforzar ventajas existentes, reducir diversidad o
+automatizar promoción de forma injustificada. El dataset no contiene datos directos de oyentes, por
+lo que el riesgo de privacidad individual es relativamente bajo; aumentaría si se integraran
+perfiles, ubicaciones o historiales de escucha.
+
+El proyecto está preparado para una etapa inicial de modelamiento de regresión. Se recomienda
+construir una línea base, excluir \code{track_id}, codificar géneros como multi-hot, evaluar con
+MAE, RMSE y $R^2$, y documentar desempeño por segmentos. El resultado debe utilizarse como apoyo a
+decisión humana, no como criterio único de mérito artístico, inversión o promoción.
