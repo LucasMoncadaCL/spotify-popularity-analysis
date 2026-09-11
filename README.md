@@ -86,7 +86,8 @@ puede exigir revisar decisiones anteriores.
 | [Registro de avance de Lucas Moncada](docs/progress/lucas_moncada.md) | Decisiones, resultados verificados y entrega de hallazgos para la preparación de datos. | Lucas Moncada | Completado. |
 | [`02_data_preparation.ipynb`](notebooks/02_data_preparation.ipynb) | Limpieza reproducible, tratamiento de anomalías, nulos y `track_id`, validación, transformaciones y construcción documentada del dataset procesado. | Ignacio Silva | Completado. |
 | [Registro de avance de Ignacio Silva](docs/progress/ignacio_silva.md) | Checkpoints, decisiones, validaciones y entrega documentada de la etapa de calidad. | Ignacio Silva | Completado. |
-| EDA profundo, ética y conclusiones | Análisis de popularidad y variables relevantes, visualizaciones, interpretación de negocio, sesgos, privacidad, limitaciones y recomendaciones para modelamiento. | César Rojas | Pendiente. |
+| [`03_exploratory_analysis.ipynb`](notebooks/03_exploratory_analysis.ipynb) | EDA profundo de popularidad, relaciones, anomalías, sesgos, ética, privacidad y recomendaciones para modelamiento. | César Rojas | Completado inicialmente. |
+| [Registro de avance de César Rojas](docs/progress/cesar_rojas.md) | Validaciones, hallazgos, decisiones de EDA y entrega documentada a modelamiento. | César Rojas | Completado inicialmente. |
 | Modelamiento y evaluación | Línea base, modelos y métricas predictivas. | Equipo | Pendiente. |
 
 Esta tabla se actualizará cuando el equipo incorpore nuevas etapas; no se crean enlaces a
@@ -127,6 +128,21 @@ Las decisiones, sus controles y las limitaciones se registran en el
 ```powershell
 uv run python scripts/build_processed_dataset.py
 ```
+
+## EDA profundo disponible
+
+El [notebook de EDA](notebooks/03_exploratory_analysis.ipynb) usa exclusivamente el dataset
+procesado y valida su contrato antes de analizarlo. Sus principales hallazgos son:
+
+- Popularidad media 33,20 y mediana 33; 10,47% de canciones con valor cero y 3,48% con 70 o más.
+- Ningún atributo acústico aislado tiene asociación fuerte con popularidad; `instrumentalness`
+  presenta la asociación negativa más visible.
+- `energy`, `loudness` y `acousticness` muestran redundancia relevante para modelos lineales.
+- El análisis documenta los sesgos de género y temporalidad, riesgos éticos y de privacidad, y la
+  recomendación de usar modelos como apoyo a decisiones humanas.
+
+El detalle de decisiones, limitaciones y traspaso se encuentra en el
+[registro de César Rojas](docs/progress/cesar_rojas.md).
 
 ## Instalación reproducible
 
