@@ -144,6 +144,13 @@ procesado y valida su contrato antes de analizarlo. Sus principales hallazgos so
 El detalle de decisiones, limitaciones y traspaso se encuentra en el
 [registro de César Rojas](docs/progress/cesar_rojas.md).
 
+## Documentación técnica complementaria
+
+El [informe LaTeX extendido](docs/latex/README.md) consolida el desarrollo, las decisiones,
+la robustez estadística, los riesgos y una guía de defensa. Complementa este README y los
+notebooks, que siguen siendo las fuentes oficiales de resumen y evidencia ejecutable. Su versión
+compilada está disponible en [`output/pdf/main.pdf`](output/pdf/main.pdf).
+
 ## Instalación reproducible
 
 ### Requisitos
