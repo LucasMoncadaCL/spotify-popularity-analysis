@@ -1,6 +1,7 @@
 """Funciones reproducibles para el EDA posterior a la preparacion."""
 
 from collections.abc import Sequence
+from math import sqrt
 
 import pandas as pd
 
@@ -127,3 +128,97 @@ def iqr_outlier_summary(data: pd.DataFrame, features: Sequence[str]) -> pd.DataF
             }
         )
     return pd.DataFrame(rows).set_index("variable")
+
+
+def dataset_comparison(raw: pd.DataFrame, processed: pd.DataFrame) -> pd.DataFrame:
+    """Compara indicadores clave antes y despues de consolidar canciones."""
+
+    rows = []
+    for stage, data in (("Original", raw), ("Procesado", processed)):
+        popularity = data["popularity"]
+        rows.append(
+            {
+                "dataset": stage,
+                "filas": len(data),
+                "canciones_unicas": data["track_id"].nunique(),
+                "popularidad_media": popularity.mean(),
+                "popularidad_mediana": popularity.median(),
+                "popularidad_cero_pct": popularity.eq(0).mean() * 100,
+                "popularidad_70_o_mas_pct": popularity.ge(70).mean() * 100,
+            }
+        )
+    return pd.DataFrame(rows).set_index("dataset")
+
+
+def explicit_effect_summary(data: pd.DataFrame) -> pd.Series:
+    """Resume diferencias descriptivas y d de Cohen entre grupos de explicit."""
+
+    required = {"explicit", "popularity"}
+    if not required.issubset(data.columns):
+        raise ValueError("Se requieren explicit y popularity.")
+
+    non_explicit = data.loc[~data["explicit"].astype(bool), "popularity"]
+    explicit = data.loc[data["explicit"].astype(bool), "popularity"]
+    if len(non_explicit) < 2 or len(explicit) < 2:
+        raise ValueError("Cada grupo debe contener al menos dos observaciones.")
+
+    pooled_variance = (
+        (len(explicit) - 1) * explicit.var() + (len(non_explicit) - 1) * non_explicit.var()
+    ) / (len(explicit) + len(non_explicit) - 2)
+    cohen_d = (explicit.mean() - non_explicit.mean()) / sqrt(pooled_variance)
+
+    return pd.Series(
+        {
+            "n_no_explicita": len(non_explicit),
+            "n_explicita": len(explicit),
+            "diferencia_medias": explicit.mean() - non_explicit.mean(),
+            "diferencia_medianas": explicit.median() - non_explicit.median(),
+            "cohen_d": cohen_d,
+        }
+    )
+
+
+def categorical_cardinality(data: pd.DataFrame, columns: Sequence[str]) -> pd.DataFrame:
+    """Cuenta valores unicos para orientar el tratamiento de categoricas."""
+
+    missing = set(columns).difference(data.columns)
+    if missing:
+        raise ValueError(f"Faltan variables: {', '.join(sorted(missing))}")
+    return pd.DataFrame(
+        {
+            "valores_unicos": data.loc[:, list(columns)].nunique(dropna=False),
+            "porcentaje_sobre_filas": data.loc[:, list(columns)].nunique(dropna=False)
+            / len(data)
+            * 100,
+        }
+    ).rename_axis("variable")
+
+
+def genre_support_sensitivity(
+    data: pd.DataFrame, thresholds: Sequence[int] = (100, 200, 500)
+) -> pd.DataFrame:
+    """Evalua estabilidad del lider por mediana ante distintos soportes minimos."""
+
+    rows = []
+    for threshold in thresholds:
+        summary = expanded_genre_summary(data, minimum_count=threshold)
+        if summary.empty:
+            rows.append(
+                {
+                    "soporte_minimo": threshold,
+                    "generos_incluidos": 0,
+                    "genero_lider": "No aplica",
+                    "mediana_lider": float("nan"),
+                }
+            )
+            continue
+        leader = summary.iloc[0]
+        rows.append(
+            {
+                "soporte_minimo": threshold,
+                "generos_incluidos": len(summary),
+                "genero_lider": leader["genre"],
+                "mediana_lider": leader["popularidad_mediana"],
+            }
+        )
+    return pd.DataFrame(rows).set_index("soporte_minimo")
