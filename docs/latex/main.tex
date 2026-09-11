@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[numbers]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{spotifygreen}{HTML}{1DB954}
+\definecolor{spotifydark}{HTML}{191414}
+\definecolor{softgray}{HTML}{F2F4F5}
+\graphicspath{{../../reports/figures/}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\risk}[1]{\textbf{#1}}
+\renewcommand{\arraystretch}{1.15}
+\setlist{nosep,leftmargin=*}
+\setlist[description]{style=nextline,leftmargin=0pt}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\setlength{\headheight}{14pt}
+\setlength{\emergencystretch}{3em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Spotify Popularity Analysis}
+\rhead{Informe técnico extendido}
+\cfoot{\thepage}
+\titleformat{\section}{\Large\bfseries\color{spotifydark}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries\color{spotifydark}}{\thesubsection}{0.7em}{}
+
+\title{\textbf{Spotify Popularity Analysis}\\[0.4em]
+\large Informe técnico extendido y apoyo para defensa}
+\author{Lucas Moncada \and Ignacio Silva \and César Rojas}
+\date{11 de septiembre de 2026}
+
+\begin{document}
+
+\maketitle
+\begin{center}
+\fcolorbox{spotifygreen}{softgray}{\parbox{0.87\textwidth}{
+Este documento complementa el README y los notebooks. Consolida evidencia, decisiones,
+limitaciones y argumentos para defensa; no sustituye los artefactos ejecutables ni constituye
+un modelo predictivo terminado.}}
+\end{center}
+
+\tableofcontents
+\clearpage
+
+\input{sections/00_resumen_ejecutivo}
+\input{sections/01_introduccion}
+\input{sections/02_problema_negocio}
+\input{sections/03_objetivos_kpis}
+\input{sections/04_fuente_datos}
+\input{sections/05_metodologia_crisp_dm}
+\input{sections/06_comprension_datos}
+\input{sections/07_calidad_preparacion}
+\input{sections/08_eda}
+\input{sections/09_analisis_variables}
+\input{sections/10_sesgos_etica_privacidad}
+\input{sections/11_limitaciones_riesgos}
+\input{sections/12_recomendaciones_modelamiento}
+\input{sections/13_defensa_tecnica}
+\input{sections/14_conclusiones}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{bibliography}
+
+\end{document}

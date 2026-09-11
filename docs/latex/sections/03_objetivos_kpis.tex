@@ -1,0 +1,43 @@
+\section{Objetivos y KPIs}
+
+\textbf{Objetivo general.} Analizar relaciones entre atributos musicales y contextuales y la
+popularidad observada, dejando una base confiable y evidencia reproducible para evaluar modelos de
+regresión.
+
+\textbf{Objetivos específicos.}
+
+\begin{enumerate}
+\item comprender el problema, los interesados y las decisiones relevantes;
+\item documentar procedencia, estructura y calidad de la fuente;
+\item preparar una unidad de análisis de una canción por \code{track_id};
+\item explorar distribuciones, relaciones, anomalías, redundancias y sesgos;
+\item clasificar variables según utilidad y riesgo para modelamiento;
+\item comunicar limitaciones éticas, de privacidad y de interpretación.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\caption{Indicadores del proyecto y su función.}
+\label{tab:kpis}
+\begin{tabularx}{\textwidth}{p{2.6cm}p{4.2cm}X}
+\toprule
+Tipo & Indicador & Interpretación y uso \\
+\midrule
+Negocio & Media y mediana de popularidad & Describen el centro del catálogo observado; no son
+metas de predicción por sí mismas. \\
+Negocio & Proporción con popularidad $\geq 70$ & Segmento operativo de alta popularidad; el umbral
+no es una categoría oficial de Spotify. \\
+Negocio & Popularidad por género & Compara segmentos con soporte; no estima prevalencia real ni
+efecto causal. \\
+Calidad & Completitud & Controla celdas disponibles y evita imputaciones injustificadas. \\
+Calidad & Duplicidad de \code{track_id} & Verifica unidad de análisis y previene fuga entre
+entrenamiento y prueba. \\
+Modelo & MAE & Error absoluto promedio en puntos de popularidad, interpretable en la escala original. \\
+Modelo & RMSE & Penaliza más los errores grandes y complementa MAE. \\
+Modelo & $R^2$ & Proporción de variabilidad explicada respecto de una línea base; no mide causalidad. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Los KPIs de negocio describen utilidad potencial; las estadísticas descriptivas caracterizan la
+muestra; y las métricas técnicas solo serán válidas al evaluarse fuera de muestra.
