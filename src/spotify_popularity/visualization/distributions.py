@@ -103,3 +103,43 @@ def save_figure(figure: Figure, path: Path) -> None:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(path, dpi=150, bbox_inches="tight")
+
+
+def plot_correlation_heatmap(correlation: pd.DataFrame) -> Figure:
+    """Muestra una matriz de correlacion legible para variables numericas."""
+
+    figure, axis = plt.subplots(figsize=(12, 9))
+    sns.heatmap(
+        correlation,
+        cmap="vlag",
+        center=0,
+        vmin=-1,
+        vmax=1,
+        square=True,
+        linewidths=0.3,
+        cbar_kws={"label": "Correlacion de Pearson"},
+        ax=axis,
+    )
+    axis.set_title("Matriz de correlacion entre variables numericas")
+    figure.tight_layout()
+    return figure
+
+
+def plot_binned_popularity(data: pd.DataFrame, feature: str, bins: int = 20) -> Figure:
+    """Relaciona una variable continua con la mediana por intervalos de igual frecuencia."""
+
+    _require_columns(data, [feature, "popularity"])
+    binned = data.loc[:, [feature, "popularity"]].copy()
+    binned["intervalo"] = pd.qcut(binned[feature], q=bins, duplicates="drop")
+    summary = binned.groupby("intervalo", observed=True).agg(
+        valor=(feature, "median"), popularidad=("popularity", "median")
+    )
+    figure, axis = plt.subplots(figsize=(7, 4.5))
+    sns.lineplot(data=summary, x="valor", y="popularidad", marker="o", color=SPOTIFY_GREEN, ax=axis)
+    axis.set(
+        title=f"Popularidad mediana por cuantiles de {feature}",
+        xlabel=feature,
+        ylabel="Popularidad mediana",
+    )
+    figure.tight_layout()
+    return figure
