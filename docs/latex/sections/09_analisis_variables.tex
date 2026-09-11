@@ -1,0 +1,60 @@
+\section{Análisis de variables y utilidad para modelamiento}
+
+La tabla siguiente integra descripción estadística, relación observada y decisión técnica. Una
+correlación débil no implica inutilidad multivariable: interacciones y relaciones no lineales pueden
+aportar información, pero deben comprobarse fuera de muestra.
+
+\small
+\begin{longtable}{p{3.2cm}p{3.4cm}p{3.2cm}p{4.2cm}}
+\caption{Síntesis de variables para la siguiente etapa.}\label{tab:analisis-variables}\\
+\toprule
+Variable & Descripción estadística & Relación con popularidad & Utilidad o riesgo \\
+\midrule
+\endfirsthead
+\toprule
+Variable & Descripción estadística & Relación con popularidad & Utilidad o riesgo \\
+\midrule
+\endhead
+\code{danceability} & Continua 0--1, distribución amplia & Pearson 0,064; Spearman 0,055; curva por cuantiles & Candidata; permitir no linealidad \\
+\code{energy} & Continua 0--1 & Asociación casi nula con target & Candidata, pero redundante con sonoridad y acousticness \\
+\code{loudness} & dB con cola negativa & Pearson 0,072; Spearman 0,067 & Candidata; escalar y revisar extremos \\
+\code{speechiness} & Masa cerca de cero y cola alta & Pearson -0,047; Spearman -0,067 & Candidata; posible transformación y segmentación \\
+\code{acousticness} & Continua 0--1, relación no lineal & Pearson -0,039; Spearman 0,010 & Candidata con cautela por redundancia \\
+\code{instrumentalness} & Acumulación en cero y valores altos & Mayor asociación: -0,128/-0,124 & Candidata; no convertir asociación en regla \\
+\code{liveness} & Asimétrica y acotada & Cerca de cero & Mantener para prueba multivariable \\
+\code{valence} & Distribución amplia 0--1 & Cerca de cero & Candidata; relacionada con danceability \\
+\code{tempo} & Continua; incluye cero y máximo 243,372 & Cerca de cero & Validar extremos y escalar \\
+\code{duration_ms} & Cola larga; máximo 87,29 minutos & Pearson -0,023; Spearman 0,013 & Evaluar \code{log1p} y escala robusta \\
+\code{explicit} & 7.704 verdaderas de 89.740 & Diferencia media 4,03; $d=0{,}196$ & Binaria candidata; auditar por confusores \\
+\code{track_genres} & 114 etiquetas básicas; combinaciones multietiqueta & Diferencias descriptivas por género & Multi-hot; evitar doble conteo \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Cardinalidad de variables categóricas}
+
+\begin{table}[H]
+\centering
+\caption{Cardinalidad sobre el dataset procesado.}
+\label{tab:cardinalidad}
+\resizebox{\textwidth}{!}{\input{tables/categorical_cardinality}}
+\end{table}
+
+\code{artists}, \code{album_name} y \code{track_name} podrían memorizar identidades o ejemplos
+concretos. El dato de 1.432 valores únicos de \code{track_genres} cuenta combinaciones de etiquetas,
+no géneros básicos. \code{key}, \code{mode} y \code{time_signature} están almacenadas como números,
+pero su significado es categórico; tratarlas como distancias continuas impondría relaciones
+arbitrarias.
+
+\subsection{Multicolinealidad y redundancia}
+
+La multicolinealidad ocurre cuando predictores aportan información lineal muy similar. No afecta
+necesariamente la predicción global, pero puede aumentar la varianza de coeficientes, cambiar signos
+y dificultar explicaciones. Aquí, \code{energy}, \code{loudness} y \code{acousticness} forman el
+principal grupo de atención.
+
+El escalamiento coloca variables en rangos comparables y es necesario para penalizaciones, aunque
+no elimina correlación. Ridge puede estabilizar coeficientes distribuyendo señal entre predictores;
+Lasso puede seleccionar, pero su elección entre variables correlacionadas puede ser inestable. El
+factor de inflación de varianza (VIF) sería útil si se adopta una regresión lineal explicativa; no se
+calcula ahora porque aún no se definió la matriz final de diseño ni el propósito inferencial.

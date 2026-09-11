@@ -1,0 +1,155 @@
+\section{Análisis exploratorio profundo}
+
+El EDA se realiza sobre una fila por canción. Este cambio hace que cada estadística responda a la
+unidad de negocio elegida y no a la cantidad de etiquetas de género asociadas.
+
+\subsection{Distribución procesada de popularidad}
+
+La media es 33,198, la mediana 33, la desviación estándar 20,578, los percentiles 25 y 75 son 19 y
+49, y el percentil 95 es 67. El rango completo 0--100 es compatible con la escala documentada.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.84\textwidth]{05_processed_popularity_distribution.png}
+\caption{Popularidad de 89.740 canciones únicas. La concentración baja-media y la masa en cero son
+relevantes para líneas base y evaluación por segmentos.}
+\label{fig:popularidad-procesada}
+\end{figure}
+
+La Figura~\ref{fig:popularidad-procesada} importa porque define la dificultad del objetivo y
+advierte que una métrica global puede ocultar errores distintos en canciones de baja y alta
+popularidad. Los valores 0 y 100 no son errores solo por estar en los extremos. La limitación es que
+la distribución describe una captura histórica sin fecha de referencia.
+
+\subsection{Pearson y Spearman}
+
+Pearson resume covariación lineal; Spearman calcula asociación monotónica sobre rangos y es menos
+dependiente de una relación lineal exacta. La comparación evita concluir a partir de una sola forma.
+
+\begin{table}[H]
+\centering
+\caption{Correlaciones con \code{popularity}, ordenadas por magnitud de Spearman.}
+\label{tab:correlaciones-target}
+\input{tables/target_correlations}
+\end{table}
+
+Todas las magnitudes son pequeñas. \code{instrumentalness} es la señal negativa más visible;
+\code{loudness} y \code{danceability} son positivas débiles. Diferencias de signo entre métodos,
+como en \code{acousticness} y \code{duration_ms}, sugieren formas no lineales, empates o patrones
+segmentados. La implicancia es evaluar modelos multivariables sin esperar gran poder explicativo de
+un atributo aislado. La limitación central es que correlación no controla confusores ni implica
+causalidad.
+
+\subsection{Matriz de correlación y redundancia}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.91\textwidth]{06_numeric_correlation_heatmap.png}
+\caption{Matriz de Pearson para variables numéricas. Las celdas más intensas aparecen entre
+predictores de audio, no con el objetivo.}
+\label{fig:matriz-correlacion}
+\end{figure}
+
+La Figura~\ref{fig:matriz-correlacion} permite detectar redundancia: \code{energy}--\code{loudness}
+alcanza 0,759; \code{energy}--\code{acousticness}, $-0{,}733$; y
+\code{loudness}--\code{acousticness}, $-0{,}583$. Para regresión lineal, coeficientes asociados
+pueden volverse inestables y difíciles de interpretar. Esto no obliga a retirar variables: permite
+planificar regularización y diagnóstico. La matriz solo refleja relaciones pares y lineales.
+
+\subsection{Relaciones bivariadas por cuantiles}
+
+Un scatterplot con casi 90 mil puntos produciría sobreposición. Se dividen valores en cuantiles y se
+representa la mediana de popularidad de cada intervalo, manteniendo todos los datos en el cálculo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{07_binned_feature_popularity.png}
+\caption{Popularidad mediana por cuantiles de cinco atributos. Las curvas permiten observar forma y
+no solo un coeficiente global.}
+\label{fig:cuantiles-popularidad}
+\end{figure}
+
+La Figura~\ref{fig:cuantiles-popularidad} muestra caída más consistente con
+\code{instrumentalness}; \code{loudness} y \code{danceability} crecen en parte del rango, pero no de
+forma ilimitada. \code{energy} y \code{acousticness} exhiben curvatura. Esto respalda términos no
+lineales o modelos flexibles como hipótesis de modelamiento, no reglas creativas. Los cuantiles
+resumen heterogeneidad y pueden ocultar subgrupos por género o época.
+
+\subsection{Contenido explícito y tamaño de efecto}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{08_explicit_popularity_boxplot.png}
+\caption{Distribución de popularidad por clasificación explícita. El solapamiento entre grupos es
+amplio pese a diferencias en los centros.}
+\label{fig:explicit-popularidad}
+\end{figure}
+
+El grupo no explícito contiene 82.036 canciones y el explícito 7.704. Sus medias son 32,852 y
+36,884; las medianas, 33 y 37. Para medir relevancia práctica se calculó $d$ de Cohen con desviación
+estándar combinada \citep{cohen1988}.
+
+\begin{table}[H]
+\centering
+\caption{Diferencias y tamaño de efecto de \code{explicit}.}
+\label{tab:explicit-efecto}
+\input{tables/explicit_effect}
+\end{table}
+
+La diferencia de 4,03 puntos puede resultar estadísticamente detectable con una muestra grande,
+pero $d=0{,}196$ indica separación estandarizada pequeña. La Figura~\ref{fig:explicit-popularidad}
+confirma fuerte solapamiento. La asociación puede depender de género, público, recencia y
+promoción; no prueba que hacer una canción explícita aumente popularidad.
+
+\subsection{Géneros multietiqueta y sensibilidad}
+
+Cada valor de \code{track_genres} se divide por \code{|}. Una canción puede participar en varias
+etiquetas: las filas expandidas no constituyen canciones adicionales. El resumen cuenta IDs únicos
+por etiqueta y exige soporte para evitar líderes de muestras mínimas.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{09_genre_popularity_summary.png}
+\caption{Géneros con mayor mediana de popularidad entre etiquetas con al menos 100 canciones.}
+\label{fig:generos-popularidad}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Sensibilidad del líder por mediana a distintos soportes mínimos.}
+\label{tab:sensibilidad-generos}
+\input{tables/genre_sensitivity}
+\end{table}
+
+Los 114 géneros superan 100, 200 y 500 canciones, y \code{pop} mantiene mediana 66. Esto demuestra
+estabilidad frente a esos umbrales en esta muestra, no superioridad universal. La Figura
+\ref{fig:generos-popularidad} sirve para segmentar el dataset; su limitación es el balance artificial
+del origen y la superposición de canciones entre etiquetas.
+
+\subsection{Valores extremos}
+
+El criterio IQR marca observaciones fuera de $[Q_1-1{,}5IQR, Q_3+1{,}5IQR]$. Es una regla de
+identificación, no una prueba de error.
+
+\begin{table}[H]
+\centering
+\caption{Rangos y recuentos fuera de IQR.}
+\label{tab:extremos}
+\resizebox{0.94\textwidth}{!}{\input{tables/outlier_summary}}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.93\textwidth]{10_outlier_review.png}
+\caption{Revisión de extremos. Las colas largas y acumulaciones en cero requieren interpretación por
+variable, no eliminación automática.}
+\label{fig:revision-extremos}
+\end{figure}
+
+\code{duration_ms} alcanza 5.237.295 ms (87,29 minutos); puede representar contenido largo válido.
+\code{tempo} incluye cero y merece validación puntual, pero no se infiere que sea inválido sin
+metadatos adicionales. \code{loudness} llega a $-49{,}531$ y 4,532 dB. En
+\code{speechiness}, \code{instrumentalness} y \code{liveness}, una gran cantidad fuera de IQR es
+compatible con distribuciones asimétricas acotadas 0--1. La implicancia es probar transformaciones o
+escaladores robustos y analizar sensibilidad; eliminar puntos podría borrar géneros completos o
+casos legítimos.

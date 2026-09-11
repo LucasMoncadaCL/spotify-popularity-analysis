@@ -1,0 +1,27 @@
+\section{Introducción}
+
+Las plataformas musicales generan metadatos y descriptores de audio que permiten caracterizar
+catálogos a una escala difícil de abordar manualmente. En este contexto, la inteligencia musical
+puede ayudar a describir segmentos, detectar patrones y priorizar preguntas de negocio. Sin
+embargo, la disponibilidad de atributos no implica que la popularidad pueda explicarse solo por la
+estructura sonora: la exposición, la promoción, la recencia y el reconocimiento previo también
+intervienen y no están observados en este dataset.
+
+El proyecto analiza la relación entre atributos de canciones y \code{popularity}. Su alcance actual
+incluye comprensión del problema, evaluación de la fuente, preparación, EDA y recomendaciones para
+modelamiento. No incluye todavía un modelo entrenado ni una evaluación predictiva fuera de muestra.
+
+Conviene distinguir tres conceptos:
+
+\begin{itemize}
+\item \textbf{Asociación:} dos variables cambian de forma relacionada en los datos observados. Pearson y
+Spearman cuantifican formas específicas de asociación.
+\item \textbf{Predicción:} un procedimiento estima valores para observaciones no usadas al ajustarlo. Requiere
+particiones y métricas fuera de muestra.
+\item \textbf{Causalidad:} un cambio deliberado en una variable produciría un cambio en otra. Exige un diseño
+causal, supuestos o evidencia que este estudio observacional no proporciona.
+\end{itemize}
+
+Por tanto, frases como ``mayor sonoridad causa popularidad'' o ``la música explícita tiene éxito'' no
+están respaldadas. El lenguaje correcto describe patrones de la muestra y formula hipótesis para
+validaciones futuras.

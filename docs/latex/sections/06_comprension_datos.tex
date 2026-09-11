@@ -1,0 +1,55 @@
+\section{Comprensión inicial de los datos}
+
+La inspección original confirmó 114.000 filas, 21 columnas, cero filas exactamente duplicadas y
+89.741 IDs únicos. Hay 16.641 IDs repetidos que abarcan 40.900 filas; equivalen a 24.259
+apariciones adicionales. En consecuencia, una fila representa una asignación pista--género y no
+necesariamente una canción nueva.
+
+Las tres celdas nulas corresponden a artista, álbum y nombre de una única fila. Esa misma fila tiene
+duración cero. El bajo porcentaje de nulos no basta para concluir alta calidad: duplicidad
+semántica, unidad de análisis y consistencia son más relevantes en este caso.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{01_popularity_distribution.png}
+\caption{Distribución inicial de popularidad sobre 114.000 asignaciones pista--género. La media es
+33,24 y la mediana 35; el gráfico todavía pondera varias veces canciones multigénero.}
+\label{fig:popularidad-inicial}
+\end{figure}
+
+La Figura~\ref{fig:popularidad-inicial} permite diagnosticar concentración baja-media, pero no debe
+interpretarse aún como distribución por canción única. El 14,05\% de las filas vale cero y el
+4,80\% alcanza 70 o más.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{02_duration_distribution.png}
+\caption{Duración original limitada al percentil 99 para preservar legibilidad. El máximo no se
+elimina y alcanza aproximadamente 87,29 minutos.}
+\label{fig:duracion-inicial}
+\end{figure}
+
+La Figura~\ref{fig:duracion-inicial} separa visualización de decisión: recortar el eje no elimina
+observaciones. La mediana original es 3,55 minutos y el percentil 99 es 8,85; la fila con duración
+cero requiere tratamiento por combinar múltiples problemas de calidad.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{03_explicit_distribution.png}
+\caption{Conteo inicial de contenido explícito. Solo 8,55\% de las filas está marcado como
+explícito; \code{False} no debe interpretarse más allá de la definición disponible.}
+\label{fig:explicit-inicial}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{04_audio_feature_distributions.png}
+\caption{Distribuciones iniciales de atributos acústicos. \code{speechiness},
+\code{instrumentalness} y \code{liveness} concentran masa cerca de cero.}
+\label{fig:audio-inicial}
+\end{figure}
+
+La Figura~\ref{fig:audio-inicial} anticipa asimetría y acumulaciones válidas en variables acotadas;
+por ello media, IQR y gráficos deben interpretarse con sus formas distributivas. Finalmente, las
+114 etiquetas de género tienen exactamente 1.000 filas cada una: esto facilita comparaciones con
+soporte, pero es evidencia de balance artificial y no de prevalencia real.

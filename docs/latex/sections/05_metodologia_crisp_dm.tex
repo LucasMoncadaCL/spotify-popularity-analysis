@@ -1,0 +1,30 @@
+\section{Metodología CRISP-DM}
+
+CRISP-DM organiza el trabajo en seis fases iterativas \citep{crispdm}. Un hallazgo de calidad,
+modelamiento o evaluación puede obligar a revisar una fase anterior; el flujo no es estrictamente
+lineal.
+
+\begin{table}[H]
+\centering
+\caption{Estado de CRISP-DM en el proyecto.}
+\label{tab:crispdm}
+\begin{tabularx}{\textwidth}{p{3.2cm}X p{3cm}}
+\toprule
+Fase & Aplicación & Estado \\
+\midrule
+Business Understanding & Problema, interesados, objetivos, KPIs y restricciones & Completada
+inicialmente \\
+Data Understanding & Fuente, diccionario, calidad inicial y distribuciones & Completada inicialmente \\
+Data Preparation & Índice, fila inválida, consolidación de IDs y géneros múltiples & Completada
+inicialmente \\
+Modeling & Líneas base y regresiones justificadas & Pendiente \\
+Evaluation & MAE, RMSE, $R^2$, utilidad, errores por grupos y robustez temporal & Pendiente \\
+Deployment & Repositorio reproducible, informe y presentación & En construcción \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La separación entre notebooks refleja responsabilidades: \code{01_data_understanding.ipynb}
+documenta negocio y diagnóstico; \code{02_data_preparation.ipynb} transforma la fuente;
+\code{03_exploratory_analysis.ipynb} estudia canciones únicas. La lógica común se implementa en
+\code{src/spotify_popularity/} y se verifica en \code{tests/}.

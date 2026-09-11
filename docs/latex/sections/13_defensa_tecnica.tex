@@ -1,0 +1,132 @@
+\section{Preguntas probables de defensa y respuestas técnicas}
+
+\subsection*{¿Por qué 114.000 filas no son 114.000 canciones?}
+\textbf{Respuesta corta.} Porque solo hay 89.741 \code{track_id} únicos en el origen.\par
+\textbf{Explicación técnica.} Una canción puede aparecer en varias filas por sus asignaciones de
+género. Hay 16.641 IDs repetidos y 24.259 apariciones adicionales.\par
+\textbf{Error que evitar.} Llamar ``duplicados exactos'' a esas filas: contienen distintos géneros y
+no son idénticas.
+
+\subsection*{¿Por qué consolidaron \code{track_id}?}
+\textbf{Respuesta corta.} Para usar una canción como unidad y evitar doble conteo y fuga.\par
+\textbf{Explicación técnica.} Si el mismo ID llega a entrenamiento y prueba, el desempeño queda
+inflado. La consolidación mantiene atributos invariantes y reúne etiquetas.\par
+\textbf{Error que evitar.} Eliminar todos los tracks repetidos y perder canciones válidas.
+
+\subsection*{¿Por qué utilizaron la mediana de popularidad?}
+\textbf{Respuesta corta.} Era una regla robusta, determinista y no dependía del orden de filas.\par
+\textbf{Explicación técnica.} En 720 IDs repetidos el objetivo difería. Elegir el primero sería
+arbitrario y la mediana reduce influencia de discrepancias extremas.\par
+\textbf{Error que evitar.} Decir que la mediana recupera la popularidad ``verdadera'' o actual.
+
+\subsection*{¿Qué es una correlación?}
+\textbf{Respuesta corta.} Una medida de asociación entre variables.\par
+\textbf{Explicación técnica.} Resume dirección e intensidad bajo una definición concreta; aquí se
+usan asociaciones lineales y monotónicas. Sus valores van de $-1$ a 1.\par
+\textbf{Error que evitar.} Interpretar un valor bajo como ausencia total de cualquier relación.
+
+\subsection*{¿Qué diferencia existe entre Pearson y Spearman?}
+\textbf{Respuesta corta.} Pearson mide asociación lineal; Spearman, asociación monotónica por
+rangos.\par
+\textbf{Explicación técnica.} Spearman tolera mejor curvaturas monotónicas y reduce sensibilidad a
+magnitudes extremas, aunque ambos pueden fallar ante relaciones complejas.\par
+\textbf{Error que evitar.} Afirmar que Spearman demuestra causalidad o resuelve todos los outliers.
+
+\subsection*{¿Por qué correlación no implica causalidad?}
+\textbf{Respuesta corta.} Porque una asociación puede surgir por confusores, selección o causalidad
+inversa.\par
+\textbf{Explicación técnica.} No hay intervención, temporalidad ni control suficiente de marketing,
+género, recencia y exposición.\par
+\textbf{Error que evitar.} Convertir un coeficiente en una recomendación para modificar la música.
+
+\subsection*{¿Por qué \code{instrumentalness} no significa que una canción será impopular?}
+\textbf{Respuesta corta.} Su correlación es débil y describe promedios de esta muestra.\par
+\textbf{Explicación técnica.} Pearson es $-0{,}128$ y Spearman $-0{,}124$; existe amplio solapamiento
+y posibles diferencias por género y exposición.\par
+\textbf{Error que evitar.} Tratar una tendencia poblacional débil como destino de una canción.
+
+\subsection*{¿Qué significa multicolinealidad?}
+\textbf{Respuesta corta.} Que varios predictores contienen información lineal redundante.\par
+\textbf{Explicación técnica.} \code{energy} correlaciona 0,759 con \code{loudness} y $-0{,}733$ con
+\code{acousticness}. En modelos lineales puede desestabilizar coeficientes.\par
+\textbf{Error que evitar.} Suponer que siempre obliga a eliminar una variable o que impide predecir.
+
+\subsection*{¿Por qué no eliminaron outliers?}
+\textbf{Respuesta corta.} Un extremo estadístico no es automáticamente un error.\par
+\textbf{Explicación técnica.} Canciones largas, habladas, instrumentales o en vivo pueden ser casos
+válidos. IQR se utilizó para revisar, y la fila inequívocamente inválida sí se retiró.\par
+\textbf{Error que evitar.} Aplicar una regla IQR sin considerar el significado de la variable.
+
+\subsection*{¿Qué problema tiene usar \code{artists} como predictor?}
+\textbf{Respuesta corta.} Puede memorizar reputación y no generalizar a artistas nuevos.\par
+\textbf{Explicación técnica.} Hay 31.437 valores únicos y un mismo artista puede aparecer en ambos
+conjuntos. Se necesita control de encoding y validación agrupada.\par
+\textbf{Error que evitar.} Presentar reconocimiento de identidades como aprendizaje musical general.
+
+\subsection*{¿Qué problema tiene usar \code{track_id}?}
+\textbf{Respuesta corta.} Es un identificador, no una característica generalizable.\par
+\textbf{Explicación técnica.} Tiene un valor por canción procesada; un modelo puede memorizar y no
+aprender un patrón reutilizable. Se conserva para trazabilidad y particiones.\par
+\textbf{Error que evitar.} Codificarlo numéricamente o con one-hot como predictor.
+
+\subsection*{¿Cómo funciona \code{track_genres}?}
+\textbf{Respuesta corta.} Contiene etiquetas únicas separadas por \code{|}.\par
+\textbf{Explicación técnica.} Al consolidar un track se preservan todos sus géneros ordenados. Para
+analizar se expande; para modelar se crean indicadores por etiqueta.\par
+\textbf{Error que evitar.} Contar las filas expandidas como canciones nuevas.
+
+\subsection*{¿Qué es multi-hot encoding?}
+\textbf{Respuesta corta.} Una columna binaria por etiqueta, permitiendo varias activas por fila.\par
+\textbf{Explicación técnica.} Una canción \code{pop|rock} tendrá 1 en ambas columnas. A diferencia de
+one-hot exclusivo, respeta pertenencia múltiple.\par
+\textbf{Error que evitar.} Elegir solo el primer género y descartar información.
+
+\subsection*{¿Qué sesgos tiene el dataset?}
+\textbf{Respuesta corta.} Muestreo balanceado por género, temporalidad desconocida, variables
+omitidas y dependencia por artista.\par
+\textbf{Explicación técnica.} Estos sesgos afectan agregados, generalización temporal y evaluación
+de artistas nuevos. La consolidación corrige duplicación, no representatividad.\par
+\textbf{Error que evitar.} Afirmar que 1.000 filas por género reflejan el catálogo real.
+
+\subsection*{¿Qué riesgos éticos existen?}
+\textbf{Respuesta corta.} Reforzar popularidad previa, reducir diversidad y automatizar promoción.\par
+\textbf{Explicación técnica.} Un sistema optimizado con señales históricas puede reproducir
+desigualdades de exposición y convertir correlaciones en criterios normativos.\par
+\textbf{Error que evitar.} Equiparar popularidad estimada con calidad o mérito artístico.
+
+\subsection*{¿Qué privacidad hay que considerar?}
+\textbf{Respuesta corta.} El riesgo actual es bajo porque no hay datos de oyentes, pero no es cero.\par
+\textbf{Explicación técnica.} Existen metadatos públicos de obras y artistas; se exige trazabilidad y
+uso responsable. Integrar perfiles o escuchas requeriría controles adicionales.\par
+\textbf{Error que evitar.} Concluir que todo dato musical puede reutilizarse sin condiciones.
+
+\subsection*{¿Por qué \code{popularity} es problemática?}
+\textbf{Respuesta corta.} Es dinámica, histórica y depende de factores no observados.\par
+\textbf{Explicación técnica.} Reproducciones y recencia influyen, no se conoce la fecha de extracción
+y Spotify marca el campo como obsoleto en la API actual.\par
+\textbf{Error que evitar.} Tratarla como una medida atemporal de éxito o calidad.
+
+\subsection*{¿Qué harían distinto con datos temporales?}
+\textbf{Respuesta corta.} Definirían un horizonte y validarían entrenando en pasado y probando en
+futuro.\par
+\textbf{Explicación técnica.} Se crearían variables disponibles al momento de predicción, evitando
+información posterior, y se mediría deriva entre periodos.\par
+\textbf{Error que evitar.} Mezclar fechas aleatoriamente y afirmar capacidad prospectiva.
+
+\subsection*{¿Por qué usar MAE, RMSE y $R^2$?}
+\textbf{Respuesta corta.} Miden aspectos complementarios del error.\par
+\textbf{Explicación técnica.} MAE es interpretable en puntos; RMSE enfatiza errores grandes; $R^2$
+compara variabilidad explicada contra una referencia. Deben calcularse fuera de muestra.\par
+\textbf{Error que evitar.} Elegir una sola métrica o interpretar $R^2$ como porcentaje de aciertos.
+
+\subsection*{¿La diferencia de \code{explicit} es importante?}
+\textbf{Respuesta corta.} Es visible, pero pequeña en escala estandarizada.\par
+\textbf{Explicación técnica.} La media difiere 4,03 puntos y $d$ de Cohen es 0,196. Con muestras
+grandes puede existir significancia estadística sin gran relevancia práctica.\par
+\textbf{Error que evitar.} Recomendar contenido explícito basándose en una comparación no causal.
+
+\subsection*{¿Por qué las correlaciones débiles no descartan un modelo?}
+\textbf{Respuesta corta.} Un modelo puede combinar señales, interacciones y curvaturas.\par
+\textbf{Explicación técnica.} Las correlaciones son pares y resumen formas simples; el valor real debe
+medirse fuera de muestra contra una línea base.\par
+\textbf{Error que evitar.} Prometer que complejidad garantiza buen desempeño.

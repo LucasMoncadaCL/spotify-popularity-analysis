@@ -4,7 +4,11 @@ import pandas as pd
 import pytest
 
 from spotify_popularity.analysis.exploratory import (
+    categorical_cardinality,
+    dataset_comparison,
     expanded_genre_summary,
+    explicit_effect_summary,
+    genre_support_sensitivity,
     popularity_summary,
     validate_processed_dataset,
 )
@@ -43,3 +47,38 @@ def test_expanded_genre_summary_uses_unique_tracks_per_label() -> None:
     pop = summary.set_index("genre").loc["pop"]
     assert pop["canciones"] == 2
     assert pop["popularidad_media"] == 25
+
+
+def test_dataset_comparison_preserves_both_stages() -> None:
+    comparison = dataset_comparison(_data(), _data().iloc[:2])
+
+    assert comparison.loc["Original", "filas"] == 3
+    assert comparison.loc["Procesado", "canciones_unicas"] == 2
+
+
+def test_explicit_effect_summary_calculates_standardized_difference() -> None:
+    data = pd.DataFrame(
+        {
+            "explicit": [False, False, True, True],
+            "popularity": [10.0, 20.0, 20.0, 30.0],
+        }
+    )
+
+    effect = explicit_effect_summary(data)
+
+    assert effect["diferencia_medias"] == 10
+    assert effect["diferencia_medianas"] == 10
+    assert effect["cohen_d"] == pytest.approx(2**0.5)
+
+
+def test_categorical_cardinality_counts_values() -> None:
+    cardinality = categorical_cardinality(_data(), ["track_genres"])
+
+    assert cardinality.loc["track_genres", "valores_unicos"] == 3
+
+
+def test_genre_support_sensitivity_reports_empty_threshold() -> None:
+    sensitivity = genre_support_sensitivity(_data(), thresholds=(1, 3))
+
+    assert sensitivity.loc[1, "generos_incluidos"] == 3
+    assert sensitivity.loc[3, "generos_incluidos"] == 0

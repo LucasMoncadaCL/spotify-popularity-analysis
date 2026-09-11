@@ -1,0 +1,50 @@
+\section{Calidad y preparación de datos}
+
+La preparación se ejecuta desde la fuente inmutable mediante
+\path{scripts/build_processed_dataset.py}. La implementación en
+\path{src/spotify_popularity/data/preparation.py} valida esquema, detecta filas inválidas, comprueba
+atributos invariantes y consolida IDs.
+
+\begin{table}[H]
+\centering
+\caption{Problemas, decisiones y riesgos residuales de preparación.}
+\label{tab:decisiones-preparacion}
+\small
+\begin{tabularx}{\textwidth}{p{2.5cm}p{3.1cm}p{2.7cm}X p{2.7cm}}
+\toprule
+Problema & Evidencia & Decisión & Justificación & Riesgo residual \\
+\midrule
+Índice exportado & Secuencia \code{Unnamed: 0} & Retirar del derivado & No describe una canción y podría introducir orden artificial & Ninguno relevante \\
+Fila inválida & Tres textos nulos y duración cero & Excluir una fila & No hay evidencia para imputar identidad ni duración & Posible pérdida mínima de cobertura \\
+IDs repetidos & 16.641 IDs; 24.259 apariciones extra & Consolidar por \code{track_id} & Evita doble conteo y fuga entre particiones & La popularidad histórica se resume \\
+Géneros múltiples & Una pista puede aparecer en varias etiquetas & Unir etiquetas únicas con \code{|} & Conserva información sin duplicar canciones & Requiere encoding multietiqueta \\
+Popularidad variable & 720 IDs repetidos difieren en el objetivo & Usar mediana & Es determinista y robusta sin privilegiar el orden del archivo & No representa actualidad ni trayectoria \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Elegir la primera fila habría vinculado el resultado al orden del CSV; promediar sería más sensible
+a discrepancias extremas; eliminar todos los IDs repetidos descartaría información válida. La
+mediana y la preservación de etiquetas equilibran trazabilidad, robustez y retención de datos. El
+código se detiene si atributos declarados invariantes entran en conflicto, evitando consolidaciones
+silenciosas.
+
+El contrato posterior confirma 89.740 filas y 20 columnas, 89.740 IDs únicos, cero celdas nulas,
+cero duraciones no positivas y géneros no vacíos. Estas comprobaciones validan la entrada al EDA,
+pero no eliminan sesgos de origen ni garantizan representatividad.
+
+\subsection{Comparación antes y después}
+
+\begin{table}[H]
+\centering
+\caption{Impacto cuantitativo de consolidar \code{track_id}. Tabla generada por
+\code{scripts/build_latex_tables.py}.}
+\label{tab:antes-despues}
+\resizebox{\textwidth}{!}{\input{tables/dataset_comparison}}
+\end{table}
+
+La tabla~\ref{tab:antes-despues} muestra que las canciones únicas pasan de 89.741 a 89.740 por la
+exclusión de la fila inválida, mientras las filas caen 21,28\%. La media apenas cambia (33,24 a
+33,20), pero la mediana baja de 35 a 33, la masa en cero de 14,05\% a 10,47\% y el segmento de 70 o
+más de 4,80\% a 3,48\%. Esto demuestra que la duplicación por género modificaba la ponderación de
+la distribución: incluso si la media permanece cercana, otras características relevantes cambian.
