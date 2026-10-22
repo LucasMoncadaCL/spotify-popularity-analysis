@@ -47,6 +47,8 @@ Conservar el repositorio `spotify-popularity-analysis`: la rúbrica admite Spoti
 
 ## Decisiones comunes antes de empezar
 
+La [propuesta de protocolo común](protocolo_comun.md) fija los detalles de datos, partición, predictores y métricas para revisión de los tres antes del modelamiento.
+
 - **Caso y pregunta:** estimar la `popularity` observada de una canción a partir de atributos disponibles y explorar segmentos musicales. La puntuación histórica no equivale a éxito futuro ni mérito artístico.
 - **Base de datos:** reutilizar `data/raw/Spotify_Tracks_Dataset.csv` y la preparación existente. La unidad de análisis es un `track_id` único; `data/processed/spotify_tracks_clean.csv` se regenera, no se edita a mano.
 - **Protocolo principal:** fijar una única partición entrenamiento/prueba (80/20, semilla 42) y compartir los mismos identificadores de filas. Mantener la prueba reservada hasta escoger transformaciones e hiperparámetros con entrenamiento. Ningún pipeline usa `track_id`, `popularity`, nombres de pista, álbum o artista como predictores principales.
