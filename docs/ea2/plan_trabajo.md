@@ -40,8 +40,8 @@ Conservar el repositorio `spotify-popularity-analysis`: la rúbrica admite Spoti
 
 ### Transición GitFlow entre evaluaciones
 
-1. `origin/dev` fue sincronizada con `origin/main` en el commit `a4fd36a` antes de iniciar EA2. La rama local `feature/ea2-project-structure` parte del mismo commit. Abrir su PR hacia `dev` para integrar el plan y la rúbrica sin modificar la publicación de EP1 en `main`.
-2. Tras integrar ese PR, cada integrante actualiza `dev` y crea su rama acotada desde allí: `feature/ea2-modeling-lucas`, `feature/ea2-modeling-ignacio` y `feature/ea2-modeling-cesar`. El protocolo/código compartido y el notebook final se integran en PR separados para poder revisarlos.
+1. `origin/dev` fue sincronizada con `origin/main` en el commit `a4fd36a` antes de iniciar EA2. El PR #13 integró este plan y la rúbrica en `dev`; la publicación de EP1 en `main` sigue separada.
+2. Cada integrante actualiza `dev` y crea su rama acotada desde allí: `feature/ea2-modeling-lucas`, `feature/ea2-modeling-ignacio` y `feature/ea2-modeling-cesar`. El protocolo/código compartido y el notebook final se integran en PR separados para poder revisarlos.
 3. Cada PR apunta a `dev`, muestra el notebook ejecutado o evidencia equivalente, decisiones, métricas verificadas y limitaciones. La revisión cruzada Lucas → Ignacio → César → Lucas evita que una sola persona sea dueña del conocimiento.
 4. Cuando la matriz de cumplimiento y la lista de entrega estén completas, abrir un PR `dev` → `main`. Crear una etiqueta de cierre de EA2 sobre el commit integrado. No mezclar resultados de EA2 en la publicación EP1 ni forzar ramas.
 
@@ -65,7 +65,7 @@ Conservar el repositorio `spotify-popularity-analysis`: la rúbrica admite Spoti
 
 | Integrante | Núcleo obligatorio idéntico para los tres | Comprobación adicional para aportar evidencia distinta |
 |---|---|---|
-| Lucas | Referencia, Ridge, árbol, K-Means, PCA, métricas e interpretación. | Medir cuánto cambia la predicción al incorporar géneros multietiqueta frente a usar solo atributos musicales. |
+| Lucas | Referencia, Ridge, árbol, K-Means, PCA, métricas e interpretación. [Alcance individual](lucas.md). | Medir cuánto cambia la predicción al incorporar géneros multietiqueta frente a usar solo atributos musicales. |
 | Ignacio | Referencia, Ridge, árbol, K-Means, PCA, métricas e interpretación. | Comparar un tratamiento estándar con una transformación justificada de duración y escalado robusto. |
 | César | Referencia, Ridge, árbol, K-Means, PCA, métricas e interpretación. | Auditar errores por género/contenido explícito y contrastar la evaluación aleatoria con una partición agrupada por artista si las etiquetas lo permiten. |
 
@@ -93,7 +93,7 @@ Conservar el repositorio `spotify-popularity-analysis`: la rúbrica admite Spoti
 
 ## Flujo de colaboración y puntos de decisión
 
-1. Integrar el plan EA2 en `dev` como se describe arriba y hacer que los tres partan del mismo commit actualizado.
+1. Partir de `dev`, que ya contiene el plan EA2, y acordar el protocolo común antes de iniciar los notebooks 04.
 2. Abrir una rama `feature/*` por notebook o cambio acotado; no compartir un `.ipynb` editable entre personas. La lógica verdaderamente común se integra en `src/spotify_popularity/` tras acordar su interfaz.
 3. Integrar primero protocolo y código compartido; luego los tres notebooks; por último comparación, README y presentación. La revisión cruzada ocurre antes de cada integración en `dev`.
 4. Si el tiempo de cómputo obliga a reducir alcance, conservar el núcleo obligatorio de cada persona y reducir las comprobaciones adicionales antes de eliminar un modelo o el clustering.
