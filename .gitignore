@@ -30,6 +30,9 @@ models/*
 .DS_Store
 Thumbs.db
 
+# Local agent planning
+superpowers/
+
 # Artefactos auxiliares de LaTeX y revisión visual
 tmp/
 docs/latex/output/

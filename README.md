@@ -502,6 +502,10 @@ Los commits, Pull Requests y documentación se redactan en español; los nombres
 GitFlow permanecen en inglés. Las reglas completas de ramas, notebooks, datos, validación e
 integración están en la [guía de colaboración](COLLABORATORS.md).
 
+Para la Evaluación Parcial 2, el [plan de trabajo de Lucas, Ignacio y César](docs/ea2/plan_trabajo.md)
+define un núcleo técnico que los tres desarrollarán, sus comprobaciones individuales y la
+integración de modelos supervisados, clustering y defensa cruzada.
+
 ## Limitaciones actuales
 
 - El dataset es estático y no representa el estado actual de Spotify.
