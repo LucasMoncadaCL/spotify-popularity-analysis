@@ -1,0 +1,70 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.35cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{images/}}
+\definecolor{spotifygreen}{HTML}{198A45}
+\definecolor{spotifydark}{HTML}{1E2823}
+\definecolor{softgray}{HTML}{F2F5F3}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\renewcommand{\arraystretch}{1.14}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.52em}
+\setlength{\emergencystretch}{3em}
+\setlist{nosep,leftmargin=*}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{EA2 Spotify - informe de Lucas}
+\rhead{Trabajo individual y traspaso}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\title{\textbf{Popularidad histórica de canciones}\\[0.3em]
+\large Informe individual de modelamiento, evaluación y traspaso al equipo}
+\author{Lucas Moncada\\Evaluación Parcial 2 - Machine Learning}
+\date{24 de octubre de 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fcolorbox{spotifygreen}{softgray}{\parbox{0.89\linewidth}{
+Este informe consolida el trabajo de Lucas y entrega a Ignacio y César las decisiones,
+cifras, figuras y límites que deben poder reproducir y explicar. La evidencia ejecutable
+es \path{notebooks/04a_modeling_lucas.ipynb}; el informe no sustituye al notebook
+integrador ni al README Markdown exigido para la entrega del equipo.}}
+\end{center}
+
+\begin{abstract}
+Se estudió si atributos musicales y géneros permiten estimar la popularidad histórica
+de 89.740 canciones únicas de Spotify Tracks. Ridge completo obtuvo MAE 11,915,
+RMSE 16,643 y $R^2=0,348$ en la prueba aleatoria, frente a MAE 17,250 de la
+referencia mediana. Quitar los géneros elevó el MAE de Ridge a 16,671. Una prueba
+separada por artista principal mantuvo MAE 12,102, con artistas secundarios
+compartidos en parte de la prueba. El ranking del 10\,\% recuperó 159 de 653
+canciones populares y omitió 494. K-Means produjo dos perfiles musicales amplios
+cuya separación es modesta (silueta 0,245). Los hallazgos sirven para formular
+auditorías de catálogo; no establecen causalidad ni anticipan el éxito futuro.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+\input{sections/01_contexto_datos}
+\input{sections/02_supervisado}
+\input{sections/03_errores_generos_artistas}
+\input{sections/04_clustering_traspaso}
+\end{document}
