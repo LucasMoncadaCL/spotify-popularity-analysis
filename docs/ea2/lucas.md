@@ -2,6 +2,39 @@
 
 **Objetivo personal:** completar y explicar el ciclo técnico de modelamiento supervisado, no supervisado y evaluación sobre Spotify, usando el mismo protocolo que Ignacio y César. Mi comprobación adicional medirá el aporte de `track_genres` a la estimación de popularidad.
 
+## Informe individual para revisión cruzada
+
+El [informe de Lucas en PDF](informe_lucas/informe_lucas.pdf) consolida datos, método,
+resultados, figuras, límites y conclusiones del notebook 04a. Incluye un apartado de traspaso
+para que Ignacio y César puedan comprobar las cifras y llevarlas al notebook integrador. La
+[fuente LaTeX](informe_lucas/main.tex) y las [instrucciones de compilación](informe_lucas/README.md)
+quedan junto al PDF. El notebook ejecutado sigue siendo la evidencia de cálculo.
+
+## Reproducción del notebook 04a
+
+Desde la raíz del repositorio, con Python y dependencias gestionados por `uv`:
+
+```powershell
+uv sync --locked
+uv run python scripts/build_base_dataset.py
+uv run python scripts/build_processed_dataset.py
+uv run jupyter nbconvert --to notebook --execute notebooks/04a_modeling_lucas.ipynb --output 04a_modeling_lucas_reproduced.ipynb --output-dir notebooks --ExecutePreprocessor.timeout=1800
+```
+
+El último comando guarda una copia ejecutada en `notebooks/` y genera las figuras de EA2 en
+`reports/figures/ea2/`. También se puede abrir el notebook con `uv run jupyter lab` y ejecutar
+todas sus celdas en orden. La fuente debe tener SHA-256
+`b202fa49909b2d5cef71a04b1d21243cfeb36414535f2ca9272aa646721177bd` y el procesado
+89.740 canciones únicas; el notebook muestra la huella de la fuente, comprueba los controles del
+procesado y registra las huellas de las particiones.
+
+**Comprobación local del 24-10-2026:** en una copia aislada sin `.venv`, dataset procesado ni
+figuras previas, `uv 0.11.8` instaló el entorno desde `uv.lock` con Python 3.12.13. Se ejecutaron
+las 13 celdas de código sin errores; sus salidas textuales y los hashes SHA-256 de las tres
+figuras guardadas coincidieron con la ejecución original. `ruff check .` y
+`ruff format --check .` pasaron, y `pytest` terminó con 18 pruebas aprobadas. Esta comprobación
+incluyó los archivos de esta rama. Una clonación podrá repetirla tras publicar la rama en el remoto.
+
 ## 1. Protocolo común antes de modelar
 
 Lucas prepara la propuesta inicial de protocolo y la somete a revisión de Ignacio y César. El acuerdo debe fijar dataset, unidad de análisis, columnas, partición por `track_id`, semilla, métricas y formato de resultados. Los tres verifican la preparación y pueden reproducir la misma partición. Este trabajo de coordinación no reemplaza el notebook técnico personal de Lucas.
