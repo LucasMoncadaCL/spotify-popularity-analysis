@@ -66,48 +66,65 @@ evitar confundir éxito de negocio con precisión técnica.
 
 ## Metodología y estado
 
-CRISP-DM se aplica de manera iterativa: un hallazgo de preparación, modelamiento o evaluación
-puede exigir revisar decisiones anteriores.
+El equipo sigue CRISP-DM de forma iterativa. La comprensión, preparación y EDA están documentados en los notebooks 01–03; el modelamiento y la evaluación se reproducen en 04a–04c y se consolidan en el notebook 05.
 
 | Fase CRISP-DM | Aplicación en el proyecto | Estado |
 |---|---|---|
-| Business Understanding | Problema, stakeholders, objetivos e indicadores. | Completada inicialmente. |
-| Data Understanding | Fuente, variables, estructura, calidad preliminar y primeras distribuciones. | Completada inicialmente. |
-| Data Preparation | Tratamiento del índice exportado, nulos, anomalías y repetición de `track_id`. | Completada inicialmente. |
-| Modeling | Comparación de regresiones y alternativas justificadas. | Pendiente. |
-| Evaluation | Métricas técnicas, utilidad de negocio, sesgos y limitaciones. | Pendiente. |
-| Deployment | Informe, notebooks, datos y presentación reproducibles. | En construcción. |
+| Business Understanding | Problema, usuarios, objetivos e indicadores. | Documentada en el notebook 01. |
+| Data Understanding | Fuente, variables, estructura, calidad y distribuciones iniciales. | Documentada en 01 y ampliada en 03. |
+| Data Preparation | Limpieza, deduplicación por `track_id`, consolidación de géneros y validaciones. | Reproducible en 02 y `src/`. |
+| Modeling | Dummy mediana, Ridge, árbol, análisis de variantes y K-Means. | Reproducible en 04a–04c y 05. |
+| Evaluation | Métricas, errores por segmentos, KPI retrospectivo, artistas y sensibilidad. | Integrada en 05. |
+| Deployment | Comunicación reproducible en notebook, informe y presentación. | Material preparado; revisar la defensa y sincronía final antes de entregar. |
 
-### Entregables y responsables
+### Entregables de la EA2
 
-| Entregable | Alcance | Responsable | Estado |
-|---|---|---|---|
-| [`01_data_understanding.ipynb`](notebooks/01_data_understanding.ipynb) | Problema, objetivos, KPIs, fuente, CRISP-DM, descripción de variables, inspección inicial y primeras distribuciones. | Lucas Moncada | Completado. |
-| [Registro de avance de Lucas Moncada](docs/progress/lucas_moncada.md) | Decisiones, resultados verificados y entrega de hallazgos para la preparación de datos. | Lucas Moncada | Completado. |
-| [`02_data_preparation.ipynb`](notebooks/02_data_preparation.ipynb) | Limpieza reproducible, tratamiento de anomalías, nulos y `track_id`, validación, transformaciones y construcción documentada del dataset procesado. | Ignacio Silva | Completado. |
-| [Registro de avance de Ignacio Silva](docs/progress/ignacio_silva.md) | Checkpoints, decisiones, validaciones y entrega documentada de la etapa de calidad. | Ignacio Silva | Completado. |
-| [`03_exploratory_analysis.ipynb`](notebooks/03_exploratory_analysis.ipynb) | EDA profundo de popularidad, relaciones, anomalías, sesgos, ética, privacidad y recomendaciones para modelamiento. | César Rojas | Completado inicialmente. |
-| [Registro de avance de César Rojas](docs/progress/cesar_rojas.md) | Validaciones, hallazgos, decisiones de EDA y entrega documentada a modelamiento. | César Rojas | Completado inicialmente. |
-| Modelamiento y evaluación | Línea base, modelos y métricas predictivas. | Equipo | Pendiente. |
+| Entregable | Contenido |
+|---|---|
+| [`01_data_understanding.ipynb`](notebooks/01_data_understanding.ipynb) | Problema, objetivos, KPIs, fuente y comprensión inicial. |
+| [`02_data_preparation.ipynb`](notebooks/02_data_preparation.ipynb) | Preparación reproducible y validaciones de calidad. |
+| [`03_exploratory_analysis.ipynb`](notebooks/03_exploratory_analysis.ipynb) | EDA, relaciones, sesgos, ética y privacidad. |
+| [`04a_modeling_lucas.ipynb`](notebooks/04a_modeling_lucas.ipynb) | Núcleo común y comparación del aporte de géneros. |
+| [`04b_modeling_ignacio.ipynb`](notebooks/04b_modeling_ignacio.ipynb) | Núcleo común y sensibilidad a duración/escalado. |
+| [`04c_modeling_cesar.ipynb`](notebooks/04c_modeling_cesar.ipynb) | Núcleo común, errores por segmentos y partición por artista principal. |
+| [`05_model_comparison.ipynb`](notebooks/05_model_comparison.ipynb) | Reproduce la comparación común, las extensiones, la evaluación agrupada y K-Means/PCA desde la fuente original. |
+| [`output/presentations/spotify_popularity_ea2_final.pptx`](output/presentations/spotify_popularity_ea2_final.pptx) | Presentación breve con resultados, limitaciones y recomendación. |
 
-Esta tabla se actualizará cuando el equipo incorpore nuevas etapas; no se crean enlaces a
-archivos que todavía no existen.
+Las salidas del notebook 05 son la referencia para cifras comparativas. Los notebooks personales conservan el detalle de cada contribución.
 
-## Resultados disponibles
+## Resultados de modelamiento y evaluación
 
-La comprensión inicial confirmó:
+El notebook 05 vuelve a preparar la fuente y ejecuta las comparaciones; las cifras siguientes se expresan en puntos de popularidad y corresponden a sus particiones reservadas.
 
-- 114.000 registros y 21 variables.
-- 3 celdas nulas, concentradas en una misma fila anómala.
-- 0 filas exactamente duplicadas.
-- 89.741 valores únicos de `track_id`.
-- 16.641 IDs repetidos, asociados a 40.900 filas.
-- 114 géneros con 1.000 registros cada uno.
-- Popularidad media de 33,24 y mediana de 35.
-- 14,05% de los registros con popularidad 0 y 4,8% con popularidad igual o superior a 70.
+### Prueba aleatoria por canción
 
-Estos resultados describen las filas observadas. Antes de formular conclusiones por canción o
-dividir datos para modelamiento, debe resolverse la repetición de `track_id`.
+| Variante | Modelo | MAE | RMSE | R² | Mejora de MAE vs. Dummy |
+|---|---|---:|---:|---:|---:|
+| Referencia | Dummy mediana | 17,250 | 20,612 | 0,000 | — |
+| Completa | Ridge, α = 0,1 | 11,915 | 16,643 | 0,348 | 30,9 % |
+| Completa | Árbol, profundidad 15, hoja mínima 20 | 14,508 | 18,460 | 0,198 | 15,9 % |
+| Sin géneros | Ridge, α = 0,1 | 16,671 | 20,223 | 0,037 | 3,4 % |
+| Sin géneros | Árbol, profundidad 15, hoja mínima 20 | 15,693 | 19,834 | 0,074 | 9,0 % |
+
+Ridge con géneros presenta el menor MAE en esta prueba. El resultado señala asociación predictiva dentro de la muestra; no implica que los géneros causen popularidad ni que el modelo anticipe éxito futuro. La popularidad sigue siendo histórica y el muestreo está balanceado artificialmente por género.
+
+El KPI retrospectivo del 10 % superior de Ridge recuperó 159 de 653 canciones con popularidad ≥ 70: precisión 8,9 %, recall 24,3 % y lift 2,435 frente a una prevalencia de 3,6 % en esta prueba. Es una simulación sobre una variable objetivo observada, no evidencia de rentabilidad o utilidad comercial.
+
+### Prueba agrupada por artista principal
+
+| Variante | Modelo | MAE | RMSE | R² | Mejora de MAE vs. Dummy |
+|---|---|---:|---:|---:|---:|
+| Referencia | Dummy mediana | 16,707 | 20,075 | -0,003 | — |
+| Completa | Ridge, α = 0,1 | 12,102 | 16,740 | 0,302 | 27,6 % |
+| Completa | Árbol, profundidad 15, hoja mínima 100 | 14,455 | 18,247 | 0,171 | 13,5 % |
+
+La partición reserva 3.528 artistas principales y no comparte artistas principales con entrenamiento. Aun así, 2.633 canciones de prueba tienen colaboradores secundarios que aparecen en entrenamiento. Por eso describe transferencia a principales no vistos con colaboración parcialmente compartida.
+
+### Segmentos y agrupamiento
+
+El Ridge completo tuvo MAE 8,040 para popularidad (0,35), 10,546 para [35,70), 24,448 para canciones con popularidad 0 y 36,759 para [70,100]. Por condición explícita, el soporte fue 16.431 canciones no explícitas (MAE 11,704) y 1.517 explícitas (MAE 14,198). Los errores dependen del grupo y deben leerse junto a sus tamaños.
+
+K-Means eligió K=2 entre soluciones con al menos 1 % del entrenamiento en cada grupo: silueta 0,245; un perfil más energético y sonoro (54.011 canciones) y otro más acústico y tranquilo (17.781). PCA proyecta estos clústeres en dos dimensiones; conserva 44,1 % de la varianza y descarta el resto. K-Means se ajusta en las diez variables escaladas, no en esa proyección. La sensibilidad fue alta ante `log1p(duration_ms)` (ARI 0,968) y menor al retirar `loudness` (ARI 0,807). El notebook guarda la tabla integrada en [`05_model_comparison_results.csv`](reports/figures/ea2/05_model_comparison_results.csv) y la proyección en `reports/figures/ea2/05_clusters_pca.png`.
 
 ## Preparación de datos disponible
 
@@ -363,36 +380,21 @@ legal claramente definida.
 Estas probabilidades e impactos son categorías cualitativas para priorizar controles, no frecuencias
 estadísticas estimadas.
 
-## Entrega a modelamiento
+## Interpretación y uso recomendado
 
-La siguiente etapa recibe 89.740 canciones únicas y debe:
+Ridge con géneros es el candidato con menor MAE en la prueba aleatoria y mejora la referencia mediana también cuando se reservan artistas principales completos. Puede servir como evidencia exploratoria para ordenar una revisión humana dentro de una muestra comparable. El árbol ofrece una alternativa no lineal más simple de comunicar por reglas, aunque sus errores son mayores aquí.
 
-1. Establecer una línea base que prediga la mediana.
-2. Construir las transformaciones dentro de un pipeline ajustado solo con entrenamiento.
-3. Excluir `track_id` y evaluar con cuidado las variables de alta cardinalidad.
-4. Usar multi-hot encoding para `track_genres`.
-5. Comparar regresión lineal y regularizada antes de aumentar complejidad.
-6. Medir MAE, RMSE y R² fuera de muestra.
-7. Complementar una partición aleatoria con validación agrupada por artista.
-8. Preferir una partición temporal si se obtienen fechas.
-9. Reportar resultados y errores por segmentos, no solo una métrica global.
+La señal de géneros es fuerte en esta muestra, pero su balance artificial impide extrapolar las diferencias a todo Spotify. El modelo subestima canciones de alta popularidad y su KPI retrospectivo no demuestra éxito futuro. Antes de un uso operativo harían falta datos temporales, contexto de exposición y una validación prospectiva; estas fuentes no están disponibles en el dataset actual.
 
-MAE expresa el error promedio en puntos de popularidad; RMSE penaliza más los errores grandes; R²
-compara la variabilidad explicada con una referencia. Ninguna de estas métricas demuestra causalidad,
-equidad ni utilidad operativa por sí sola.
+La popularidad no es una medida de calidad artística. Una eventual herramienta debe servir para auditar y priorizar preguntas, con revisión humana y análisis de cobertura por género y por artistas nuevos.
 
 ## Conclusiones operativas
 
-El proyecto demuestra que la popularidad observada no se explica mediante una regla acústica
-simple. `instrumentalness`, `loudness` y `danceability` contienen señales descriptivas pequeñas,
-mientras los géneros muestran diferencias que deben interpretarse bajo un muestreo artificial y
-multietiqueta. Factores probablemente importantes —promoción, playlists, región, recencia y
-reputación previa— no están disponibles.
+La comparación integrada identifica Ridge con géneros como el candidato de menor MAE en la prueba aleatoria compartida. La evaluación agrupada conserva una ventaja frente a Dummy al reservar artistas principales, con solapamiento parcial de colaboradores secundarios. Estos resultados respaldan un uso exploratorio para ordenar una revisión humana dentro de datos comparables.
 
-Una futura predicción podría ayudar a priorizar revisiones, comparar segmentos o detectar casos que
-requieren más contexto. No puede garantizar éxito ni decidir por sí sola qué obra merece inversión.
-La decisión final debe combinar evidencia cuantitativa, conocimiento del mercado, objetivos
-creativos y supervisión humana.
+La popularidad observada no se explica mediante una regla acústica simple. Géneros aportan señal predictiva en esta muestra, mientras que la transformación de duración y el escalado robusto apenas cambian los resultados. K-Means produce dos perfiles acústicos exploratorios; al retirar `loudness`, su asignación pierde estabilidad.
+
+El muestreo artificialmente balanceado por género y la popularidad histórica limitan la generalización. La fuente no contiene fechas, exposición promocional, playlists, región ni reputación previa. Por tanto, el análisis no demuestra causalidad, éxito futuro ni utilidad comercial. La popularidad tampoco es una medida de calidad artística.
 
 ## Documentación técnica complementaria
 
@@ -439,9 +441,13 @@ uv run ruff format --check .
 uv run pytest
 ```
 
-Los notebooks se ejecutan en orden numérico. La lógica reutilizable se mantiene en `src/` y
-las celdas se concentran en la narrativa, las llamadas al paquete y la interpretación de
-resultados.
+Los notebooks se ejecutan en orden numérico. Para reconstruir la comparación final desde la fuente original, ejecute:
+
+```powershell
+uv run python -m nbconvert --to notebook --execute notebooks/05_model_comparison.ipynb --inplace --ExecutePreprocessor.timeout=1800
+```
+
+El notebook registra los tamaños de las particiones, las huellas de los IDs de prueba, métricas y figuras. Requiere varios minutos de cómputo; las figuras se escriben en `reports/figures/ea2/`.
 
 ## Flujo de datos
 
@@ -477,6 +483,7 @@ scripts o notebooks y acompañarse de pruebas cuando contengan reglas reutilizab
 ├── models/                     # Modelos serializados generados
 ├── notebooks/                  # Análisis numerados en orden de ejecución
 ├── reports/figures/            # Figuras para informe y presentación
+├── output/presentations/       # Presentación EA2
 ├── output/pdf/                 # Informe técnico compilado
 ├── scripts/                    # Puntos de entrada ejecutables
 ├── src/spotify_popularity/
@@ -518,5 +525,5 @@ integración de modelos supervisados, clustering y defensa cruzada.
 - No existen fechas, regiones, exposición en playlists, inversión promocional ni comportamiento de
   oyentes para controlar esos factores.
 - Los resultados descriptivos no permiten afirmar causalidad.
-- La preparación, el EDA y el análisis de sesgos, ética y privacidad están completados inicialmente;
-  el modelamiento y la evaluación fuera de muestra siguen pendientes.
+- No hay fecha de lanzamiento ni contexto de exposición para validar predicción temporal o utilidad
+  comercial. La presentación requiere defensa oral individual y revisión final del equipo.
