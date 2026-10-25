@@ -39,3 +39,9 @@ docs/latex/output/
 docs/latex/texput.log
 output/pdf/*
 !output/pdf/main.pdf
+
+# Datos temporales del exportador de gráficos de presentaciones
+.chart-data-*/
+
+# Artefactos temporales de construcción de presentación EA2
+.codex/ea2_presentation_build/
