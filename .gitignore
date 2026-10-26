@@ -30,9 +30,18 @@ models/*
 .DS_Store
 Thumbs.db
 
+# Local agent planning
+superpowers/
+
 # Artefactos auxiliares de LaTeX y revisión visual
 tmp/
 docs/latex/output/
 docs/latex/texput.log
 output/pdf/*
 !output/pdf/main.pdf
+
+# Datos temporales del exportador de gráficos de presentaciones
+.chart-data-*/
+
+# Artefactos temporales de construcción de presentación EA2
+.codex/ea2_presentation_build/

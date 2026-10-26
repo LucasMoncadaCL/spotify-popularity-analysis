@@ -161,6 +161,17 @@ Cuando el equipo complete y revise un hito:
 
 `main` no se actualiza por cada tarea individual; representa hitos completos y defendibles.
 
+## Inicio de la Evaluación Parcial 2
+
+El [plan de EA2 para Spotify](docs/ea2/plan_trabajo.md)
+mantiene este repositorio y el GitFlow acordado. Los tres integrantes desarrollan el mismo
+núcleo técnico en notebooks propios y revisan el trabajo de otra persona.
+
+Al iniciar EA2 se sincronizó `dev` con el commit publicado de EP1 en `main` (`a4fd36a`).
+La rama local `feature/ea2-project-structure` parte de ese mismo commit y se propone mediante
+Pull Request a `dev`. Las siguientes ramas de modelos y documentación EA2 se crean desde `dev`
+como indica esta guía. La entrega final se integra mediante Pull Request de `dev` a `main`.
+
 ## Comunicación y resolución de conflictos
 
 - Avisar antes de modificar archivos compartidos como `README.md` o un notebook existente.
