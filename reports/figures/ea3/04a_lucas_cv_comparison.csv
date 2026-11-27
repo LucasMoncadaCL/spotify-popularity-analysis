@@ -1,0 +1,23 @@
+modelo,parametros,MAE_CV,MAE_CV_sd,RMSE_CV,RMSE_CV_sd,R2_CV,R2_CV_sd,MAE_train_CV,fit_seconds_mean,brecha_MAE_CV
+Dummy mediana,"{'constant': None, 'quantile': None, 'strategy': 'median'}",17.22416122595672,0.02617179898768734,20.570241361986884,0.026928679017536233,-6.209729855610746e-05,5.372433826615197e-05,17.22416140633443,0.22310598691304526,-1.8037771098988742e-07
+Ridge,"{'memory': None, 'steps': [('preprocessing', ColumnTransformer(sparse_threshold=1.0,
+                  transformers=[('numeric', StandardScaler(),
+                                 ['duration_ms', 'danceability', 'energy',
+                                  'loudness', 'speechiness', 'acousticness',
+                                  'instrumentalness', 'liveness', 'valence',
+                                  'tempo']),
+                                ('categorical',
+                                 OneHotEncoder(handle_unknown='ignore'),
+                                 ['key', 'mode', 'time_signature', 'explicit']),
+                                ('genres', GenreBinarizer(), ['track_genres'])])), ('model', Ridge(alpha=0.1))], 'transform_input': None, 'verbose': False}",11.818531206022422,0.044755191766577995,16.520555305392637,0.06927831425742452,0.3549355528343907,0.004900040507321091,11.781567874074254,0.33162720998128253,0.03696333194816859
+Árbol,"{'memory': None, 'steps': [('preprocessing', ColumnTransformer(sparse_threshold=1.0,
+                  transformers=[('numeric', StandardScaler(),
+                                 ['duration_ms', 'danceability', 'energy',
+                                  'loudness', 'speechiness', 'acousticness',
+                                  'instrumentalness', 'liveness', 'valence',
+                                  'tempo']),
+                                ('categorical',
+                                 OneHotEncoder(handle_unknown='ignore'),
+                                 ['key', 'mode', 'time_signature', 'explicit']),
+                                ('genres', GenreBinarizer(), ['track_genres'])])), ('model', DecisionTreeRegressor(max_depth=15, min_samples_leaf=20, random_state=42))], 'transform_input': None, 'verbose': False}",14.381561946798747,0.017369542235704426,18.31927282475493,0.02900850109659307,0.20683306876255333,0.0009182011563216448,14.235362004506117,1.1932682196299236,0.14619994229263078
+Random Forest,"{'model__n_estimators': 100, 'model__min_samples_leaf': 1, 'model__max_features': 1.0, 'model__max_depth': None}",9.90050416335802,0.017632248541794716,14.768147168801955,0.03880051072306382,0.48452681994104946,0.0031462591939537088,3.7674410177580824,1203.5724109013875,6.133063145599937
