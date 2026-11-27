@@ -25,3 +25,25 @@ La validación se ejecuta solo en entrenamiento; los pipelines ajustan codificac
 ## Accuracy pendiente de definición
 
 La validación y métricas primarias actuales son de regresión. Si el docente confirma clasificación, acordar clase/umbrales antes de entrenar y usar accuracy junto con balanced accuracy, matriz de confusión, precisión, recall, macro-F1 y PR-AUC. Para una clase `popularity >= 70`, el clasificador mayoritario ya supera 80% de accuracy, por lo que ese porcentaje solo no demuestra capacidad de detectar canciones populares.
+
+## Implementación IE11
+
+**Estado técnico:** completado y ejecutado; 14 celdas de código sin errores y 21 pruebas
+aprobadas. Pendiente revisión humana de Lucas y merge de César hacia `dev`.
+
+La sección 9 del notebook conserva las 25 celdas históricas de EA2 y añade la comparación
+de Dummy mediana, Ridge, árbol y el Random Forest fijado por Lucas. Usa tres folds aleatorios
+con semilla 42 y tres folds deterministas de `GroupKFold`, exclusivamente sobre las 71.792
+canciones del entrenamiento compartido. La escala y codificación se ajustan dentro de cada
+fold. Se registran métricas de entrenamiento/validación, media/DE, costo, tamaños,
+asignaciones por canción y solapamiento de artistas secundarios.
+
+La evaluación de prueba de Lucas se reutiliza de su CSV publicado, con huellas registradas;
+no se crea otra prueba ni se reevalúa el bosque sobre ella. El candidato ya había sido
+seleccionado en este entrenamiento: el análisis es diagnóstico de candidatos congelados,
+no validación anidada independiente de la selección anterior.
+
+Las cifras, reproducción, límites y defensa están en el
+[informe técnico de Ignacio](informe_ignacio.md). El
+[mensaje para César](mensaje_cesar.md) entrega los pasos de revisión, merge e integración
+IE12. Las salidas regenerables tienen prefijo `04b_ignacio_` en `reports/figures/ea3/`.
