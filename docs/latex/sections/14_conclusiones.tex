@@ -1,28 +1,24 @@
 \section{Conclusiones}
 
-El proyecto dispone de una cadena reproducible desde una fuente raw preservada hasta un dataset
-analítico de 89.740 canciones únicas. La preparación resolvió la anomalía con nulos y duración cero,
-retiró el índice exportado, consolidó IDs y conservó géneros múltiples. Los controles posteriores
-confirman el contrato esperado y las pruebas automatizadas protegen la lógica central.
+El análisis y el modelamiento completan la etapa académica sobre 89.740 canciones únicas.
+En la prueba aleatoria compartida, Random Forest obtiene el menor MAE (9,648) y mejora 19,03\%
+respecto a Ridge. Su brecha de generalización y costo computacional son altos, y la búsqueda
+de parámetros no mejora al default. En GroupKFold, RF mantiene una ventaja pequeña en MAE,
+pero Ridge alcanza RMSE menor, $R^2$ mayor, brecha menor y ajuste mucho más rápido.
 
-El EDA demuestra que la popularidad se concentra en valores bajos y medios y que las asociaciones
-acústicas individuales son débiles. \code{instrumentalness} ofrece la señal de mayor magnitud, pero
-no determina el resultado. La redundancia entre energía, sonoridad y acousticness debe considerarse
-en modelos lineales. Las diferencias por explicitud y género son descriptivas, presentan
-solapamiento o sesgos de cobertura y no justifican afirmaciones causales.
+La evidencia agrupada contiene tanto CV de tres folds como el holdout independiente 04c, donde
+la selección interna también respeta grupos. Este holdout compara Ridge y árbol, no RF. Por
+tanto, Ridge es una referencia prudente para artistas principales no vistos, pero no se afirma
+que haya vencido a RF en ese test. Las canciones con artistas secundarios compartidos y la falta
+de evaluación temporal limitan ambas conclusiones.
 
-La robustez adicional confirma que el efecto estandarizado de \code{explicit} es pequeño, que el
-ranking principal de géneros no cambia entre soportes de 100, 200 y 500, y que artistas, álbumes y
-nombres tienen cardinalidad suficiente para introducir memorización. Los extremos se mantienen
-porque no existe evidencia general de error; se proponen transformaciones y validación de
-sensibilidad.
+La selección top 10\% y la segmentación de errores son retrospectivas. K-Means ofrece perfiles
+descriptivos con separación modesta y PCA sirve para visualizar, no para entrenar los clusters.
+Ninguno de estos resultados prueba ROI, éxito futuro, causalidad o calidad artística. El
+muestreo balanceado por género y la ausencia de fecha y exposición limitan la generalización.
 
-Los límites más importantes son temporalidad desconocida, muestra no representativa, objetivo
-dinámico y variables contextuales omitidas. Estos límites acotan tanto la capacidad predictiva como
-la interpretación de negocio. Éticamente, una futura herramienta debe apoyar revisión humana,
-explicitar incertidumbre y evitar automatizar asignaciones de alto impacto.
-
-La siguiente etapa debe establecer una línea base de regresión, aplicar pipelines sin leakage,
-codificar categorías según su semántica y comparar particiones aleatorias, agrupadas por artista y,
-si se obtienen fechas, temporales. El éxito no consiste solo en reducir error global: requiere
-generalización defendible, desempeño por segmentos, utilidad real y uso responsable.
+La optimización IE9 está documentada, pero la mejora de Ridge es de apenas 0,023\%, el árbol
+retiene su default y el ganador RF coincide con los defaults. Este límite debe reconocerse; no
+se repitió una búsqueda costosa sin hipótesis que justificara el costo. Antes de cualquier uso
+operativo se requieren contexto temporal, definición de una decisión y evaluación prospectiva
+con revisión humana.

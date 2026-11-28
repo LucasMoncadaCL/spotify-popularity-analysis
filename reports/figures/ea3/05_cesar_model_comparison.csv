@@ -1,0 +1,7 @@
+contexto,modelo,MAE,RMSE,R2
+Prueba aleatoria compartida (Notebook 05/Lucas),Ridge,11.914728762484764,16.64343830562924,0.34771774246649
+Prueba aleatoria compartida (Notebook 05/Lucas),Árbol,12.011595105508396,19.57226655448316,0.09794772077898439
+Prueba aleatoria compartida (Notebook 05/Lucas),Dummy mediana,17.250055716514375,20.611602158147267,-0.00039835055320280865
+Prueba aleatoria compartida (Notebook 05/Lucas),Random Forest,9.64789782421912,14.536490723943055,0.5024134695296729
+"GroupKFold, media de 3 folds (Ignacio)",Ridge,12.060595755296058,16.857524015725037,0.3278449688429962
+"GroupKFold, media de 3 folds (Ignacio)",Random Forest,11.752024079490315,16.96860816982849,0.31867350188203

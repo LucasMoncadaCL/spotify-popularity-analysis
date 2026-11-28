@@ -1,27 +1,27 @@
 \section{Problema de negocio}
 
-Artistas y organizaciones musicales deben decidir qué lanzamientos priorizar, cómo organizar un
-catálogo y dónde concentrar recursos promocionales sin conocer completamente el desempeño futuro.
-La pregunta central es:
+Los equipos de análisis musical y gestión de catálogos deben revisar grandes colecciones de
+canciones y priorizar qué casos o segmentos estudiar con mayor detalle. Los atributos del dataset
+permiten construir una estimación descriptiva de popularidad histórica, pero no incluyen las
+fechas ni la exposición necesarias para pronosticar el desempeño de un lanzamiento.
 
 \begin{quote}
-¿Qué características musicales y contextuales están asociadas con la popularidad de una canción y
-cómo puede esta información apoyar decisiones de promoción y gestión de catálogo?
+¿Cómo estimar la popularidad histórica de canciones de Spotify, identificar perfiles musicales y
+seleccionar una solución analítica que pueda apoyar la priorización y revisión humana de catálogos,
+con límites explícitos sobre lo que los datos permiten concluir?
 \end{quote}
 
-Los principales interesados y usos prudentes son:
+El usuario potencial es un equipo de análisis musical o gestión de catálogo. La decisión que podría
+apoyarse es ordenar canciones o segmentos para revisión exploratoria, no asignar automáticamente
+promoción, presupuesto o mérito artístico. El trabajo compara modelos y protocolos para mostrar qué
+solución resulta más adecuada bajo cada escenario evaluado.
 
-\begin{itemize}
-\item \textbf{Artistas:} comprender cómo se ubica una obra dentro de perfiles descriptivos, sin
-convertirlos en reglas creativas.
-\item \textbf{Sellos:} complementar revisión experta al priorizar experimentos o análisis de catálogo.
-\item \textbf{Marketing musical:} caracterizar segmentos y formular campañas que luego deben medirse.
-\item \textbf{Gestión de catálogo:} detectar grupos que requieren análisis específico y mantener una
-visión documentada de cobertura.
-\item \textbf{Curadores:} apoyar exploración de diversidad, nunca reemplazar juicio editorial.
-\end{itemize}
+La variable \code{popularity} representa una medición histórica y dinámica según Spotify
+\citep{spotify_track_api}. Por tanto, estimar su valor en canciones retenidas de una muestra no
+equivale a predecir la popularidad futura de un lanzamiento. Tampoco permite inferir ingresos,
+causalidad o éxito comercial.
 
 Las restricciones son sustanciales: no hay fecha de extracción ni de lanzamiento, inversión,
-exposición en playlists, región o comportamiento de usuarios. La popularidad es histórica y
-dinámica según Spotify \citep{spotify_track_api}. En consecuencia, el análisis puede orientar
-preguntas y priorizaciones, pero no garantizar desempeño comercial ni valorar mérito artístico.
+exposición en playlists, región o comportamiento de usuarios. Además, el muestreo original está
+balanceado artificialmente por género. En consecuencia, el resultado sirve para análisis y revisión
+humana del dataset, no para garantizar desempeño comercial ni valorar mérito artístico.

@@ -84,7 +84,7 @@ y un máximo de un hilo interno por proceso para evitar paralelismo anidado.
 | GroupKFold | Dummy mediana | 17,224 ± 0,145 | 20,570 ± 0,110 | -0,000 ± 0,000 | 17,224 | 0,000 | 0.1 s |
 | GroupKFold | Ridge | 12,061 ± 0,408 | 16,858 ± 0,650 | 0,328 ± 0,045 | 11,736 | 0,324 | 0.4 s |
 | GroupKFold | Árbol | 14,751 ± 0,195 | 18,696 ± 0,269 | 0,174 ± 0,015 | 14,211 | 0,541 | 1.4 s |
-| GroupKFold | Random Forest | 11,752 ± 0,458 | 16,969 ± 0,770 | 0,319 ± 0,055 | 3,692 | 8,060 | 986.4 s |
+| GroupKFold | Random Forest | 11,752 ± 0,458 | 16,969 ± 0,770 | 0,319 ± 0,055 | 3,692 | 8,060 | 1,086.1 s |
 
 La CV aleatoria reproduce las métricas publicadas por Lucas dentro de la tolerancia
 declarada. Al agrupar por principal, el MAE del bosque pasa de
@@ -140,7 +140,7 @@ a **0,319**). La desviación del MAE del bosque pasa de **0,018** a **0,458** al
 la de Ridge agrupado es **0,408**. Con tres folds y ajustes correlacionados, estas cifras
 no demuestran una diferencia estadísticamente significativa ni una superioridad general.
 
-El bosque tarda aproximadamente **986 s por fold agrupado**, frente a **0,415 s** de
+El bosque tarda aproximadamente **1.086 s por fold agrupado**, frente a **0,370 s** de
 Ridge en este equipo, y su brecha de MAE agrupada es **8,060 puntos**, frente a **0,324**
 de Ridge. Por tanto, la mejora de MAE por sí sola no resuelve IE12: César debe ponderar
 el error absoluto frente a errores grandes, estabilidad, costo y las condiciones de uso.

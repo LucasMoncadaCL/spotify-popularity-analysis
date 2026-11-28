@@ -1,0 +1,18 @@
+{
+  "source_sha256": "b202fa49909b2d5cef71a04b1d21243cfeb36414535f2ca9272aa646721177bd",
+  "random_test_sha256": "7270ff57b6fb81215fba2f834942d194183e3854ccac935a65e5a03f7888b318",
+  "random_train_tracks": 71792,
+  "random_test_tracks": 17948,
+  "seed": 42,
+  "python": "3.12.13",
+  "numpy": "2.5.3",
+  "pandas": "2.3.3",
+  "sklearn": "1.9.0",
+  "rf_search_seconds": 4310.574348099999,
+  "rf_search_candidates": 12,
+  "rf_search_cv_folds": 3,
+  "group_cv_folds": 3,
+  "rf_outer_jobs": 4,
+  "rf_n_jobs": 1,
+  "clean_kernel": true
+}

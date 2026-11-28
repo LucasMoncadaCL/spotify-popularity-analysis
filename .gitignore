@@ -45,3 +45,5 @@ output/pdf/*
 
 # Artefactos temporales de construcción de presentación EA2
 .codex/ea2_presentation_build/
+.codex/ep3_presentation_build/
+.codex/latex_review/
