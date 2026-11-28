@@ -8,9 +8,11 @@ local y su trazabilidad son la fuente efectiva del análisis.
 El CSV original tiene 114.000 filas y 21 columnas. Incluye identificadores, artista, álbum, nombre
 de pista, género, contenido explícito, duración y atributos acústicos. La variable objetivo
 \code{popularity} está en escala 0--100. La documentación de Spotify la relaciona principalmente
-con reproducciones y recencia, y el campo aparece actualmente como obsoleto en la API
-\citep{spotify_track_api}. Se interpreta, por ello, como fotografía histórica y no como medición en
-tiempo real.
+con reproducciones y recencia; el esquema de la API marca el campo como obsoleto
+\citep{spotify_track_api}. Además, la guía de migración de febrero de 2026 registra que el campo se
+eliminó de las respuestas en Dev Mode \citep{spotify_api_migration_2026}. El valor del CSV se
+interpreta como una fotografía histórica; no es una medición actual ni puede regenerarse como si
+fuera un campo vigente de la API.
 
 La integridad de la copia raw se controla mediante SHA-256:
 

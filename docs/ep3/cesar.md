@@ -11,11 +11,12 @@ Integrar la evidencia revisada de Lucas e Ignacio, decidir qué solución convie
 
 ## Trabajo
 
-- Esperar los PR aprobados de ensamble y validación cruzada antes de incorporar resultados definitivos.
+- Los PR #24 (Lucas) y #25 (Ignacio) ya están integrados en `dev`; la sección IE12 consume sus resultados versionados.
 - Comparar Dummy, Ridge, árbol y ensambles con criterios acordados previamente: métrica de selección, rendimiento en test, estabilidad entre folds, complejidad, errores por segmentos e interpretación de negocio.
 - Mantener la prueba final como evaluación única; no cambiar modelo, umbral o relato después de ver sus resultados.
 - Explicar qué solución se recomienda, bajo qué condiciones y por qué una alternativa más compleja no necesariamente es mejor.
 - Actualizar notebook 05, README e informe/presentación para que compartan los mismos números, parámetros, caveats y referencias a la evidencia.
+- La decisión quedó documentada en [`decision_cesar.md`](decision_cesar.md), el notebook 05 y la presentación EP3; revisar en conjunto antes de abrir el PR de esta rama.
 - Conservar sesgos, ética, privacidad, límites de popularidad histórica y recomendaciones de revisión humana.
 - Organizar la presentación para un máximo de 10 minutos y participar en la defensa cruzada de todo el pipeline.
 

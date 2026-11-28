@@ -17,24 +17,26 @@ evidencia ejecutable. El documento LaTeX consolida esa evidencia y añade materi
 Desde la raíz del repositorio:
 
 ```powershell
+$repoRoot = (Resolve-Path .).Path
 uv run python scripts/build_processed_dataset.py
 uv run python scripts/build_latex_tables.py
 New-Item -ItemType Directory -Force output/pdf | Out-Null
 Set-Location docs/latex
-latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=../../output/pdf main.tex
+latexmk -pdf -interaction=nonstopmode -halt-on-error "-outdir=$repoRoot/output/pdf" main.tex
 ```
 
 La salida final queda en `output/pdf/main.pdf`. La instalación de LaTeX debe proporcionar
 `latexmk`, `pdflatex`, BibTeX y los paquetes declarados en `main.tex`.
 
-Si MiKTeX dispone de `pdflatex` y BibTeX, pero `latexmk` no puede ejecutarse por falta de Perl,
-puede usarse la secuencia equivalente desde `docs/latex/`:
+Si `latexmk` no está disponible pero sí `pdflatex` y BibTeX, puede usarse la secuencia equivalente
+desde `docs/latex/`:
 
 ```powershell
-pdflatex '--output-directory=..\..\output\pdf' -interaction=nonstopmode -halt-on-error main.tex
-bibtex ..\..\output\pdf\main
-pdflatex '--output-directory=..\..\output\pdf' -interaction=nonstopmode -halt-on-error main.tex
-pdflatex '--output-directory=..\..\output\pdf' -interaction=nonstopmode -halt-on-error main.tex
+$outDir = (Resolve-Path ../../output/pdf).Path
+pdflatex "-output-directory=$outDir" -interaction=nonstopmode -halt-on-error main.tex
+bibtex "$outDir/main"
+pdflatex "-output-directory=$outDir" -interaction=nonstopmode -halt-on-error main.tex
+pdflatex "-output-directory=$outDir" -interaction=nonstopmode -halt-on-error main.tex
 ```
 
 ## Mantenimiento

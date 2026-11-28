@@ -130,3 +130,58 @@ grandes puede existir significancia estadística sin gran relevancia práctica.\
 \textbf{Explicación técnica.} Las correlaciones son pares y resumen formas simples; el valor real debe
 medirse fuera de muestra contra una línea base.\par
 \textbf{Error que evitar.} Prometer que complejidad garantiza buen desempeño.
+
+\subsection*{¿Qué modelo obtuvo el mejor resultado?}
+\textbf{Respuesta corta.} Depende del protocolo y de la métrica; no hay un ganador universal.\par
+\textbf{Explicación técnica.} En el test aleatorio por canción, Random Forest obtuvo MAE 9,648,
+RMSE 14,536 y $R^2=0,502$. En GroupKFold por artista principal RF gana 0,309 puntos de MAE, pero
+Ridge tiene RMSE menor, $R^2$ mayor, menor brecha y menor costo. El holdout independiente 04c
+compara Ridge y árbol, pero no evalúa RF.\par
+\textbf{Error que evitar.} Comparar resultados de particiones distintas como si fueran un único test.
+
+\subsection*{¿Qué evidencia hay de optimización de hiperparámetros?}
+\textbf{Respuesta corta.} Las búsquedas se ejecutaron y documentaron, pero apenas mejoraron los
+valores predeterminados.\par
+\textbf{Explicación técnica.} RandomizedSearchCV evaluó 12 de 144 configuraciones de RF con tres
+folds y MAE; ganó 100 árboles, profundidad sin límite, hoja mínima 1 y todas las variables en cada
+split, equivalentes a los defaults instalados. Ridge mejoró 0,023\% y el árbol no mejoró.\par
+\textbf{Error que evitar.} Afirmar que el ajuste mejoró materialmente al modelo o que probó las 144
+configuraciones.
+
+\subsection*{¿En qué se diferencian las evaluaciones por artista?}
+\textbf{Respuesta corta.} GroupKFold promedia tres folds; el holdout independiente separa un test
+agrupado reservado.\par
+\textbf{Explicación técnica.} En 04b GroupKFold forma tres particiones de entrenamiento y validación
+sin compartir artistas principales en cada fold y evalúa Ridge/RF. En 04c se reserva un grupo
+externo de 18.193 canciones, se seleccionan Ridge y árbol mediante una validación agrupada interna
+y se evalúa una vez. No se comparten artistas principales, pero 2.633 canciones de prueba comparten
+colaboradores secundarios. 04c no evaluó RF.\par
+\textbf{Error que evitar.} Llamar GroupKFold “prueba agrupada independiente” o presentar el holdout
+04c como comparación de todos los modelos.
+
+\subsection*{¿Qué significa el KPI del 10\% superior?}
+\textbf{Respuesta corta.} Mide retrospectivamente cuántos casos ya observados como populares quedaron
+en el 10\% mejor puntuado.\par
+\textbf{Explicación técnica.} Se ordenan las 17.948 canciones del test y se seleccionan 1.795; el
+positivo es popularidad observada $\geq70$. Ridge recupera 159 de 653 positivos (precisión 8,86\%,
+recall 24,35\%, lift 2,435) y RF 237 (13,20\%, 36,29\%, lift 3,629).\par
+\textbf{Error que evitar.} Interpretar este KPI como ROI, impacto causal o éxito futuro.
+
+\subsection*{¿Qué aportan K-Means y PCA?}
+\textbf{Respuesta corta.} K-Means resume dos perfiles exploratorios; PCA permite mostrarlos en dos
+dimensiones.\par
+\textbf{Explicación técnica.} K-Means se ajustó sobre las 71.792 canciones de entrenamiento, con diez
+variables escaladas, y seleccionó K=2 entre K=2--8 por silueta bajo un mínimo de tamaño de clúster.
+La silueta 0,245 indica separación modesta. Las primeras dos componentes PCA conservan 44,1\% de
+varianza; la proyección no se usó para ajustar K-Means.\par
+\textbf{Error que evitar.} Llamar naturales o perfectamente separados a los clusters, o decir que
+PCA explica toda la variación.
+
+\subsection*{¿Qué significa el 80\% mencionado oralmente?}
+\textbf{Respuesta corta.} La pauta escrita usa una banda de desempeño del 80\%; no la define como
+accuracy del modelo.\par
+\textbf{Explicación técnica.} Este proyecto implementa regresión y reporta MAE, RMSE y $R^2$. Para
+evaluar accuracy habría que definir una tarea de clasificación, clase positiva, umbral y protocolo.
+Con popularidad $\geq70$, el clasificador que siempre responde negativo logra 96,36\% accuracy por
+la prevalencia baja, pero recall cero.\par
+\textbf{Error que evitar.} Llamar accuracy a $R^2$, precisión del top 10\% o lift.

@@ -28,8 +28,8 @@ La validación y métricas primarias actuales son de regresión. Si el docente c
 
 ## Implementación IE11
 
-**Estado técnico:** completado y ejecutado; 14 celdas de código sin errores y 21 pruebas
-aprobadas. Pendiente revisión humana de Lucas y merge de César hacia `dev`.
+**Estado técnico:** completado, revisado por el equipo e integrado en `dev` mediante el
+merge PR #25. La rama de integración de César incorpora estas tablas en IE12.
 
 La sección 9 del notebook conserva las 25 celdas históricas de EA2 y añade la comparación
 de Dummy mediana, Ridge, árbol y el Random Forest fijado por Lucas. Usa tres folds aleatorios

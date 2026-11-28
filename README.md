@@ -64,20 +64,51 @@ evitar confundir éxito de negocio con precisión técnica.
 | Calidad | Duplicidad de `track_id` | Prevenir conteos sesgados y futura fuga entre entrenamiento y prueba. |
 | Modelo | MAE, RMSE y R² | Evaluar el error y la capacidad explicativa de modelos de regresión. |
 
+
+### Definición, fórmula e interpretación de los indicadores
+
+Para los indicadores predictivos, `yᵢ` es la popularidad observada y `ŷᵢ` la estimación. MAE y RMSE se expresan en puntos de popularidad (0–100); R² es adimensional. En un conjunto de evaluación fijo, menor MAE/RMSE es mejor y mayor R² es mejor, aunque R² puede ser negativo.
+
+| Indicador | Fórmula / definición | Interpretación y sentido |
+|---|---|---|
+| MAE | `(1/n) × Σ |yᵢ − ŷᵢ|` | Error absoluto promedio; menor es mejor. Se interpreta directamente en puntos de popularidad. |
+| RMSE | `sqrt((1/n) × Σ (yᵢ − ŷᵢ)²)` | Error cuadrático medio en la escala original; penaliza más las desviaciones grandes. Menor es mejor. |
+| R² | `1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²` | Compara con predecir la media observada del conjunto evaluado. 1 es perfecto, 0 equivale a esa referencia y <0 indica peor ajuste que ella. No es accuracy. |
+| Prevalencia ≥70 | `positivos / n`, donde positivo significa `popularity ≥ 70` | Proporción histórica de canciones del conjunto que alcanza el umbral. |
+| Precisión del decil | `positivos entre las k seleccionadas / k`; `k = ceil(0,10 × n)` | Fracción popular dentro de las canciones con mayores predicciones; mayor describe mejor priorización retrospectiva. |
+| Recall del decil | `positivos seleccionados / total de positivos` | Fracción de canciones históricamente populares recuperada por el decil; mayor es mejor para cobertura. |
+| Lift del decil | `precisión / prevalencia` | Mejora relativa respecto de seleccionar canciones sin ranking; 1 equivale a la prevalencia base. |
+| Brecha MAE | `MAE_validación − MAE_entrenamiento` | Diferencia de error entre datos no usados/usados en el ajuste; una brecha positiva grande alerta sobre sobreajuste. |
+| Tiempo de ajuste | Segundos medidos durante `.fit()` | Costo de entrenamiento bajo el hardware y configuración registrados; menor facilita iteración, pero no compensa automáticamente menor calidad. |
+| Completitud | `celdas no nulas / total de celdas` | Control de calidad de datos; más cercano a 100 % implica menos valores ausentes, sin garantizar validez semántica. |
+| Duplicidad de ID | `track_id` duplicados después de preparar / filas preparadas | Debe ser 0 para que una canción no pese varias veces ni cruce entre entrenamiento y prueba. |
+
+El top 10 % y el umbral 70 se usan como KPI retrospectivo porque la popularidad del dataset ya fue observada. Ninguna de esas cifras prueba rentabilidad, una acción promocional efectiva ni éxito de una canción futura. Tampoco corresponde interpretar el 80 % mencionado verbalmente como accuracy de este modelo de regresión sin una definición de objetivo y métrica.
+
 ## Metodología y estado
 
-El equipo sigue CRISP-DM de forma iterativa. La comprensión, preparación y EDA están documentados en los notebooks 01–03; el modelamiento y la evaluación se reproducen en 04a–04c y se consolidan en el notebook 05.
+El equipo sigue CRISP-DM de forma iterativa. Los notebooks 01–03 documentan comprensión, preparación y EDA; los notebooks 04a–05 conservan las contribuciones del equipo y `06_ep3_final.ipynb` reproduce el análisis integrado EP3 desde el CSV original.
 
 | Fase CRISP-DM | Aplicación en el proyecto | Estado |
 |---|---|---|
 | Business Understanding | Problema, usuarios, objetivos e indicadores. | Documentada en el notebook 01. |
 | Data Understanding | Fuente, variables, estructura, calidad y distribuciones iniciales. | Documentada en 01 y ampliada en 03. |
 | Data Preparation | Limpieza, deduplicación por `track_id`, consolidación de géneros y validaciones. | Reproducible en 02 y `src/`. |
-| Modeling | Dummy mediana, Ridge, árbol, análisis de variantes y K-Means. | Reproducible en 04a–04c y 05. |
-| Evaluation | Métricas, errores por segmentos, KPI retrospectivo, artistas y sensibilidad. | Integrada en 05. |
-| Deployment | Comunicación reproducible en notebook, informe y presentación. | Material preparado; revisar la defensa y sincronía final antes de entregar. |
+| Modeling | Dummy mediana, Ridge, árbol, Random Forest optimizado, variantes y K-Means. | Reproducible en 04a–04c, 05 y 06. |
+| Evaluation | Métricas, errores por segmentos, KPI retrospectivo, artistas y sensibilidad. | Integrada y ejecutada en 06. |
+| Deployment | Comunicación reproducible en notebook, informe y presentación. | Informe y presentación EP3 preparados; no hay despliegue operativo. |
 
-### Entregables de la EA2
+
+### Desarrollo de las seis fases CRISP-DM
+
+1. **Comprensión del negocio.** Se acota la pregunta a estimar la popularidad observada en la fuente y explorar patrones útiles para priorizar análisis de catálogo. No se promete anticipar éxitos futuros ni atribuir causalidad.
+2. **Comprensión de los datos.** Se revisan fuente, diccionario, esquema, distribuciones, popularidad objetivo, relaciones entre atributos, duplicados por canción y sesgos de la muestra. Los notebooks 01 y 03 documentan este levantamiento; el notebook 06 vuelve a producir EDA esencial.
+3. **Preparación de los datos.** Se retira una fila sin identificación útil, se consolidan apariciones por `track_id`, se preservan los géneros multietiqueta y se valida el rango/completitud. Las codificaciones y escalados se ajustan dentro de cada pipeline y solo sobre el fold de entrenamiento correspondiente.
+4. **Modelamiento.** Se usa `DummyRegressor` como referencia y se comparan Ridge, árbol y Random Forest para regresión; se estudian transformaciones de duración y escalado; K-Means identifica perfiles sin incluir `popularity`. PCA se usa como proyección de visualización.
+5. **Evaluación.** Se mantienen protocolos separados: prueba aleatoria por canción, holdout por artista principal y GroupKFold. Selección de parámetros ocurre en entrenamiento/validación; la prueba no guía la selección. Se informan MAE/RMSE/R², KPI retrospectivo, segmentos, incertidumbre entre folds, tiempo y solapamientos secundarios.
+6. **Despliegue/propuesta.** El proyecto entrega un análisis reproducible para apoyar una revisión humana del catálogo. No existe servicio productivo, integración con Spotify ni evaluación de lanzamientos posteriores. Antes de cualquier uso real se necesitarían datos actuales con fecha, exposición y resultados futuros, evaluación temporal, monitoreo y revisión de sesgo.
+
+### Entregables y evidencia del proyecto
 
 | Entregable | Contenido |
 |---|---|
@@ -87,12 +118,94 @@ El equipo sigue CRISP-DM de forma iterativa. La comprensión, preparación y EDA
 | [`04a_modeling_lucas.ipynb`](notebooks/04a_modeling_lucas.ipynb) | Núcleo común y comparación del aporte de géneros. |
 | [`04b_modeling_ignacio.ipynb`](notebooks/04b_modeling_ignacio.ipynb) | Núcleo común y sensibilidad a duración/escalado. |
 | [`04c_modeling_cesar.ipynb`](notebooks/04c_modeling_cesar.ipynb) | Núcleo común, errores por segmentos y partición por artista principal. |
-| [`05_model_comparison.ipynb`](notebooks/05_model_comparison.ipynb) | Reproduce la comparación común, las extensiones, la evaluación agrupada y K-Means/PCA desde la fuente original. |
-| [`output/presentations/spotify_popularity_ea2_final.pptx`](output/presentations/spotify_popularity_ea2_final.pptx) | Presentación breve con resultados, limitaciones y recomendación. |
+| [`05_model_comparison.ipynb`](notebooks/05_model_comparison.ipynb) | Integra la comparación común EA2, K-Means/PCA, segmentos y validación por artista. |
+| [`06_ep3_final.ipynb`](notebooks/06_ep3_final.ipynb) | Informe ejecutado desde kernel limpio: EDA, búsqueda RF, pruebas aleatoria/agrupada, segmentos, KPI, GroupKFold y K-Means/PCA. |
+| [`docs/ep3/decision_cesar.md`](docs/ep3/decision_cesar.md) | Justifica la selección IE12, compara escenarios, métricas, complejidad y límites. |
+| [`docs/ep3/auditoria_final.md`](docs/ep3/auditoria_final.md) | Matriz de cumplimiento IE9–IE12, evidencia y límites de la entrega. |
+| [`docs/ep3/guion_defensa.md`](docs/ep3/guion_defensa.md) | Guion de 9 minutos 35 segundos y respuestas a preguntas técnicas. |
+| [`output/presentations/spotify_popularity_ea2_final.pptx`](output/presentations/spotify_popularity_ea2_final.pptx) | Presentación base de EA2 conservada para trazabilidad. |
+| [`output/presentations/spotify_popularity_ep3_final.pptx`](output/presentations/spotify_popularity_ep3_final.pptx) | Presentación integrada de EP3, 12 láminas y notas para exposición. |
 
-Las salidas del notebook 05 son la referencia para cifras comparativas. Los notebooks personales conservan el detalle de cada contribución.
+El notebook [`06_ep3_final.ipynb`](notebooks/06_ep3_final.ipynb) es el punto de entrada integrado y vuelve a ejecutar los experimentos a partir del CSV original. Los notebooks 04a–05 conservan el detalle de las contribuciones y sus protocolos.
 
-## Resultados de modelamiento y evaluación
+### Integración EP3: optimización, ensamble y selección IE12
+
+Los notebooks 04a y 04b documentan las contribuciones originales de Lucas e Ignacio. La sección 10 de `06_ep3_final.ipynb` vuelve a preparar el CSV original, ejecuta desde cero la búsqueda de Random Forest y los tres folds GroupKFold, sin leer CSV antiguos para calcular métricas. El notebook completó 32 celdas (15 de código) desde un kernel limpio, sin errores; su manifiesto registra SHA-256, versiones y tiempos. Los CSV de `reports/figures/ea3/06_*` se regeneran con esa ejecución.
+
+Para IE9, RandomizedSearchCV evaluó 12 de 144 configuraciones en 3 folds y seleccionó por MAE; el ganador de Random Forest coincide con los parámetros por defecto de scikit-learn 1.9.0, así que no se afirma una mejora frente al default. La ejecución limpia del notebook 06 tomó 4.310,6 s (71,8 min) en la búsqueda y refit, con cuatro procesos externos y `n_jobs=1` dentro de cada bosque. Notebook 05 valida Ridge y árbol en una partición interna separada del test y escribe `reports/figures/ea3/05_cesar_hyperparameter_validation.csv`: Ridge reduce MAE de validación de 11,7883 a 11,7855 (0,023 %) y el árbol no mejora respecto del default. No es una búsqueda anidada.
+
+| Escenario | Modelo | MAE | RMSE | R² | Lectura |
+|---|---|---:|---:|---:|---|
+| Prueba aleatoria por canción (Lucas) | Ridge | 11,915 | 16,643 | 0,348 | Referencia lineal; la partición puede compartir artistas. |
+| Prueba aleatoria por canción (Lucas) | Random Forest | **9,648** | **14,536** | **0,502** | Menor error observado en esta partición; brecha MAE train–CV de 6,133. |
+| GroupKFold por artista principal, media de 3 folds (Ignacio) | Ridge | 12,061 ± 0,408 | **16,858 ± 0,650** | **0,328 ± 0,045** | Modelo recomendado para el escenario de principales no vistos: sencillo, rápido y con métricas comparables. |
+| GroupKFold por artista principal, media de 3 folds (Ignacio) | Random Forest | **11,752 ± 0,458** | 16,969 ± 0,770 | 0,319 ± 0,055 | Gana 0,309 puntos de MAE; brecha train–validación de 8,060 y ajuste cercano a 1.086 s por fold. |
+| Holdout agrupado independiente 04c | Ridge | 12,102 | 16,740 | 0,302 | Validación interna agrupada; 18.193 canciones reservadas. |
+| Holdout agrupado independiente 04c | Árbol depth=15/leaf=100 | 14,455 | 18,247 | 0,171 | Validación interna agrupada. No incluye Random Forest. |
+
+La selección depende del escenario: Random Forest es preferible si el único objetivo es minimizar MAE en la partición aleatoria de canciones. Para artistas principales no vistos, Ridge es una referencia prudente: en GroupKFold tiene RMSE menor, R² mayor y un costo de ajuste mucho menor; en el holdout independiente 04c supera al árbol, pero RF no fue evaluado en ese holdout. Solo hay tres folds y sus desviaciones estándar no demuestran significancia. Los protocolos agrupados separan artistas principales, pero conservan colaboradores secundarios compartidos. El bosque fue preseleccionado en CV aleatoria, así que el GroupKFold de candidatos fijos no equivale a una búsqueda anidada independiente.
+
+La evaluación integrada de Notebook 05 completa el núcleo aleatorio supervisado. La tabla combina Dummy/Ridge/árbol seleccionados en esa validación con el Random Forest ya evaluado por Lucas. Los valores de Dummy y Ridge coinciden con Lucas y sirven para verificar el split común; el árbol de Notebook 05 (`max_depth=None`, `min_samples_leaf=1`) difiere del árbol de Lucas (`max_depth=15`, `min_samples_leaf=20`), por lo que se etiqueta su configuración y no se intercambian sus métricas.
+
+| Modelo | Configuración evaluada | MAE | RMSE | R² |
+|---|---|---:|---:|---:|
+| Dummy mediana | Referencia | 17,250 | 20,612 | -0,000 |
+| Ridge | α = 0,1 seleccionado en validación | 11,915 | 16,643 | 0,348 |
+| Árbol | Default seleccionado en validación | 12,012 | 19,572 | 0,098 |
+| Random Forest | 100 árboles; candidato de Lucas | **9,648** | **14,536** | **0,502** |
+
+Estos resultados corresponden a la prueba de canciones con semilla 42. El árbol default de Notebook 05 (MAE 12,012) y el árbol depth=15/leaf=20 de Lucas (MAE 14,508, reproducido por Notebook 06) son configuraciones distintas; el bosque se compara con la segunda en la tabla EP3. El bosque reduce MAE 33,5 % frente al árbol congelado de Lucas y 19,7 % frente al árbol default de Notebook 05. Los resultados de artistas agrupados se mantienen aparte.
+
+La prueba por canción y la CV por artista responden preguntas diferentes; no deben ordenarse como si fueran la misma partición. La popularidad es histórica, la muestra está balanceada artificialmente por género y no hay fechas, exposición o contexto comercial. El KPI retrospectivo tampoco demuestra éxito futuro ni utilidad comercial. «Accuracy 80 %» sigue pendiente de definición del docente: este trabajo resuelve regresión, y MAE/R² no son accuracy.
+
+La presentación de 12 láminas y su guion se enlazan arriba. La rúbrica escrita asigna el nivel “Buen desempeño” a una banda de 80 %; eso no impone 80 % de accuracy al modelo. La frase oral sobre accuracy requiere aclarar objetivo, umbral y métrica con el docente.
+
+### Resultados reproducidos por el notebook 06
+
+Las siguientes tablas provienen de la ejecución completa desde un kernel limpio, con scikit-learn 1.9.0. La prueba aleatoria comparte los mismos ID de prueba usados en la integración previa (SHA-256 `7270ff57b6fb81215fba2f834942d194183e3854ccac935a65e5a03f7888b318`). Dummy, Ridge y árbol se mantienen como referencia; la comparación EP3 usa el árbol congelado de Lucas (`max_depth=15`, `min_samples_leaf=20`), por lo que su resultado difiere del árbol por defecto seleccionado por el notebook 05.
+
+| Protocolo aleatorio | Modelo/configuración | MAE | RMSE | R² |
+|---|---|---:|---:|---:|
+| Prueba por canción | Dummy mediana | 17,250 | 20,612 | -0,000 |
+| Prueba por canción | Ridge, α=0,1 | 11,915 | 16,643 | 0,348 |
+| Prueba por canción | Árbol, depth=15/leaf=20 | 14,508 | 18,460 | 0,198 |
+| Prueba por canción | Random Forest, 100 árboles/depth sin límite/leaf=1/max_features=1,0 | **9,648** | **14,536** | **0,502** |
+
+La validación aleatoria de RF fue MAE `9,9005 ± 0,0176`, RMSE `14,7681 ± 0,0388` y R² `0,4845 ± 0,0031`; su MAE medio de entrenamiento fue 3,7674 y la brecha fue 6,1331 puntos. El tiempo medio de ajuste por fold de la configuración ganadora fue 1.554,0 s; la búsqueda completa y su refit tardaron 4.310,6 s.
+
+| KPI retrospectivo del decil superior | Seleccionadas | Populares recuperadas / total ≥70 | Precisión | Recall | Lift |
+|---|---:|---:|---:|---:|---:|
+| Prevalencia de prueba | — | 653/17.948 | — | — | — |
+| Ridge | 1.795 | 159/653 | 8,86 % | 24,35 % | 2,435 |
+| Random Forest | 1.795 | 237/653 | 13,20 % | 36,29 % | 3,629 |
+
+Los errores de RF varían con popularidad y contenido explícito; cada fila informa soporte. Son mediciones de la misma prueba aleatoria, no predicciones futuras.
+
+| Segmento de la prueba | Canciones | MAE de RF |
+|---|---:|---:|
+| Popularidad = 0 | 1.863 | 14,192 |
+| Popularidad (0,35) | 7.361 | 7,187 |
+| Popularidad [35,70) | 8.071 | 9,081 |
+| Popularidad [70,100] | 653 | 31,432 |
+| No explícita | 16.431 | 9,546 |
+| Explícita | 1.517 | 10,756 |
+
+#### Generalización por artista principal
+
+GroupKFold usa tres folds del entrenamiento aleatorio, con cero artistas principales compartidos entre ajuste y validación. En cada fold se observaron entre 3.032 y 3.093 canciones de validación con artistas secundarios presentes en el ajuste; por ello el aislamiento es por artista principal, no por toda colaboración.
+
+| GroupKFold (media ± desviación estándar) | MAE | RMSE | R² | Brecha MAE | Ajuste medio/fold |
+|---|---:|---:|---:|---:|---:|
+| Ridge | 12,061 ± 0,408 | **16,858 ± 0,650** | **0,328 ± 0,045** | 0,324 | 0,370 s |
+| Random Forest | **11,752 ± 0,458** | 16,969 ± 0,770 | 0,319 ± 0,055 | 8,060 | 1.086,1 s |
+
+En esta evaluación el bosque gana 0,309 puntos de MAE, pero Ridge obtiene mejor RMSE y R², una brecha de entrenamiento mucho menor y un costo de ajuste muy inferior. La diferencia pequeña de MAE entre tres folds no demuestra significancia. La decisión IE12 sigue condicionada al uso: RF lidera para canciones retenidas similares a la muestra; Ridge es una referencia más prudente para artistas principales no vistos. Ninguno demuestra éxito comercial futuro.
+
+La ejecución y artefactos se conservan en [`notebooks/06_ep3_final.ipynb`](notebooks/06_ep3_final.ipynb), [`reports/figures/ea3/06_ep3_manifest.json`](reports/figures/ea3/06_ep3_manifest.json) y las tablas `06_*` de `reports/figures/ea3/`.
+
+## Resultados del núcleo de Notebook 05 (sin Random Forest)
+
+Esta tabla corresponde al núcleo repetido en Notebook 05, con selección por validación interna y sin el Random Forest agregado de los artefactos de Lucas. La sección “Integración EP3” superior contiene la comparación completa. El árbol es una configuración distinta del árbol registrado por Lucas en 04a; véase la explicación de configuraciones antes de la tabla integrada.
 
 El notebook 05 vuelve a preparar la fuente y ejecuta las comparaciones; las cifras siguientes se expresan en puntos de popularidad y corresponden a sus particiones reservadas.
 
@@ -102,13 +215,13 @@ El notebook 05 vuelve a preparar la fuente y ejecuta las comparaciones; las cifr
 |---|---|---:|---:|---:|---:|
 | Referencia | Dummy mediana | 17,250 | 20,612 | 0,000 | — |
 | Completa | Ridge, α = 0,1 | 11,915 | 16,643 | 0,348 | 30,9 % |
-| Completa | Árbol, profundidad 15, hoja mínima 20 | 14,508 | 18,460 | 0,198 | 15,9 % |
+| Completa | Árbol por defecto, profundidad sin límite, hoja mínima 1 | 12,012 | 19,572 | 0,098 | 30,4 % |
 | Sin géneros | Ridge, α = 0,1 | 16,671 | 20,223 | 0,037 | 3,4 % |
 | Sin géneros | Árbol, profundidad 15, hoja mínima 20 | 15,693 | 19,834 | 0,074 | 9,0 % |
 
-Ridge con géneros presenta el menor MAE en esta prueba. El resultado señala asociación predictiva dentro de la muestra; no implica que los géneros causen popularidad ni que el modelo anticipe éxito futuro. La popularidad sigue siendo histórica y el muestreo está balanceado artificialmente por género.
+Entre las variantes Ridge/árbol de esta tabla, Ridge con géneros presenta el menor MAE. En la comparación completa EP3, Random Forest obtiene menor MAE en la misma prueba. El resultado señala asociación predictiva dentro de la muestra; no implica que los géneros causen popularidad ni que el modelo anticipe éxito futuro. La popularidad sigue siendo histórica y el muestreo está balanceado artificialmente por género.
 
-El KPI retrospectivo del 10 % superior de Ridge recuperó 159 de 653 canciones con popularidad ≥ 70: precisión 8,9 %, recall 24,3 % y lift 2,435 frente a una prevalencia de 3,6 % en esta prueba. Es una simulación sobre una variable objetivo observada, no evidencia de rentabilidad o utilidad comercial.
+En el KPI retrospectivo del 10 % superior de la misma prueba, se seleccionan 1.795 de 17.948 canciones. Ridge recuperó 159 de 653 positivos (precisión 8,86 %, recall 24,35 %, lift 2,435); RF recuperó 237 (13,20 %, 36,29 %, 3,629). Es una medición sobre una variable objetivo ya observada, no evidencia de rentabilidad o utilidad comercial.
 
 ### Prueba agrupada por artista principal
 
@@ -422,6 +535,16 @@ del proyecto.
 
 ## Ejecución y verificación
 
+La reproducción integrada de EP3 se realiza desde un kernel limpio y ejecutando todas las celdas, sin permitir errores:
+
+```powershell
+uv sync --all-groups
+uv run python -m ipykernel install --user --name python3 --display-name "Python 3.12 (spotify-popularity-analysis)"
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/06_ep3_final.ipynb --ExecutePreprocessor.timeout=-1
+```
+
+La búsqueda de Random Forest y GroupKFold puede demorar considerablemente. La corrida registra versiones, SHA-256 de la fuente y de la partición de prueba, parámetros y tiempos en `reports/figures/ea3/06_ep3_manifest.json`; las tablas y figuras de esa carpeta se vuelven a generar al ejecutar el notebook.
+
 ```powershell
 # Abrir los notebooks
 uv run jupyter lab
@@ -441,13 +564,13 @@ uv run ruff format --check .
 uv run pytest
 ```
 
-Los notebooks se ejecutan en orden numérico. Para reconstruir la comparación final desde la fuente original, ejecute:
+Los notebooks se ejecutan en orden numérico. Notebook 05 reconstruye los análisis EA2 y consume los CSV EP3 versionados. Para regenerar también la evidencia EP3 desde el entrenamiento, ejecute primero `04a_modeling_lucas.ipynb` y `04b_modeling_ignacio.ipynb`, y luego `05_model_comparison.ipynb`; 04a y 04b pueden tardar bastante por la búsqueda y los folds de Random Forest. Para volver a ejecutar solo el consolidado con las tablas actuales:
 
 ```powershell
 uv run python -m nbconvert --to notebook --execute notebooks/05_model_comparison.ipynb --inplace --ExecutePreprocessor.timeout=1800
 ```
 
-El notebook registra los tamaños de las particiones, las huellas de los IDs de prueba, métricas y figuras. Requiere varios minutos de cómputo; las figuras se escriben en `reports/figures/ea2/`.
+El notebook registra los tamaños de las particiones, las huellas de los IDs de prueba, métricas y figuras. Requiere varios minutos de cómputo; mantiene las figuras EA2 en `reports/figures/ea2/` y escribe la comparación IE12 en `reports/figures/ea3/05_cesar_model_comparison.csv`.
 
 ## Flujo de datos
 
@@ -512,6 +635,19 @@ integración están en la [guía de colaboración](COLLABORATORS.md).
 Para la Evaluación Parcial 2, el [plan de trabajo de Lucas, Ignacio y César](docs/ea2/plan_trabajo.md)
 define un núcleo técnico que los tres desarrollarán, sus comprobaciones individuales y la
 integración de modelos supervisados, clustering y defensa cruzada.
+
+## Evaluación Parcial 3
+
+La evidencia final de modelamiento, selección por escenario, trazabilidad con la pauta y
+limitaciones está en [auditoría EP3](docs/ep3/auditoria_final.md), [decisión de modelos](docs/ep3/decision_cesar.md)
+y [guion de defensa](docs/ep3/guion_defensa.md). La presentación final tiene 12 láminas en
+`output/presentations/spotify_popularity_ep3_final.pptx`. El informe técnico LaTeX se mantiene en
+`docs/latex/` y su PDF compilado en `output/pdf/main.pdf`.
+
+La validación agrupada tiene dos protocolos distintos: GroupKFold de tres folds por artista
+principal en Notebook 04b y un holdout agrupado independiente con validación interna agrupada en
+Notebook 04c. El holdout 04c evalúa Ridge y árbol, no Random Forest; sus resultados no deben
+mezclarse con GroupKFold ni con la prueba aleatoria por canción.
 
 ## Limitaciones actuales
 
