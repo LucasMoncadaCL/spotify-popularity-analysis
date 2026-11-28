@@ -1,43 +1,44 @@
 \section{Objetivos y KPIs}
 
-\textbf{Objetivo general.} Analizar relaciones entre atributos musicales y contextuales y la
-popularidad observada, dejando una base confiable y evidencia reproducible para evaluar modelos de
-regresión.
+\textbf{Objetivo general.} Desarrollar y evaluar modelos de Machine Learning para estimar la
+popularidad histórica de canciones de Spotify, identificar perfiles musicales y seleccionar la
+solución analítica más adecuada para apoyar la priorización y revisión humana de catálogos
+musicales.
 
 \textbf{Objetivos específicos.}
 
 \begin{enumerate}
-\item comprender el problema, los interesados y las decisiones relevantes;
-\item documentar procedencia, estructura y calidad de la fuente;
-\item preparar una unidad de análisis de una canción por \code{track_id};
+\item definir el problema, los usuarios potenciales, la decisión de apoyo y los límites de uso;
+\item documentar la fuente y preparar una unidad de análisis de una canción por \code{track_id};
 \item explorar distribuciones, relaciones, anomalías, redundancias y sesgos;
-\item clasificar variables según utilidad y riesgo para modelamiento;
-\item comunicar limitaciones éticas, de privacidad y de interpretación.
+\item comparar Dummy, Ridge, árbol de decisión y Random Forest con MAE, RMSE y $R^2$;
+\item medir desempeño por segmentos y bajo particiones aleatorias y agrupadas por artista;
+\item explorar perfiles con K-Means y representar su estructura con PCA;
+\item justificar la selección por escenario y comunicar límites éticos, metodológicos y de negocio.
 \end{enumerate}
 
 \begin{table}[H]
 \centering
-\caption{Indicadores del proyecto y su función.}
+\caption{Indicadores usados y alcance de interpretación.}
 \label{tab:kpis}
-\begin{tabularx}{\textwidth}{p{2.6cm}p{4.2cm}X}
+\small
+\begin{tabularx}{\textwidth}{p{2.5cm}p{4.1cm}X}
 \toprule
 Tipo & Indicador & Interpretación y uso \\
 \midrule
-Negocio & Media y mediana de popularidad & Describen el centro del catálogo observado; no son
-metas de predicción por sí mismas. \\
-Negocio & Proporción con popularidad $\geq 70$ & Segmento operativo de alta popularidad; el umbral
-no es una categoría oficial de Spotify. \\
-Negocio & Popularidad por género & Compara segmentos con soporte; no estima prevalencia real ni
-efecto causal. \\
-Calidad & Completitud & Controla celdas disponibles y evita imputaciones injustificadas. \\
-Calidad & Duplicidad de \code{track_id} & Verifica unidad de análisis y previene fuga entre
-entrenamiento y prueba. \\
-Modelo & MAE & Error absoluto promedio en puntos de popularidad, interpretable en la escala original. \\
-Modelo & RMSE & Penaliza más los errores grandes y complementa MAE. \\
-Modelo & $R^2$ & Proporción de variabilidad explicada respecto de una línea base; no mide causalidad. \\
+Descriptivo & Media, mediana y proporción con popularidad 0 o $\geq70$ & Caracterizan la muestra histórica; el corte 70 es una definición analítica, no una categoría oficial de Spotify. \\
+Regresión & MAE, RMSE y $R^2$ & MAE mide error absoluto en puntos; RMSE pondera más errores grandes; $R^2$ compara con la media. No son accuracy. \\
+Segmentación & MAE por intervalo de popularidad y por grupos como \code{explicit} & Mostrar siempre el número de canciones de cada grupo; un promedio global puede ocultar errores altos en la cola. \\
+Ranking retrospectivo & Precisión, recall y lift del top 10\% & Ordena el test por puntuación predicha y considera positivo popularidad observada $\geq70$. Describe una recuperación retrospectiva, no ROI ni éxito futuro. \\
+No supervisado & Silueta y tamaños de clúster; varianza explicada por PCA & Ayudan a describir separación y proyección; no son predicción de popularidad ni evidencia causal. \\
+Calidad de datos & Completitud, unicidad de \code{track_id} y rangos válidos & Verifican la unidad de análisis y consistencia del dataset preparado. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Los KPIs de negocio describen utilidad potencial; las estadísticas descriptivas caracterizan la
-muestra; y las métricas técnicas solo serán válidas al evaluarse fuera de muestra.
+Los indicadores de modelo se calculan fuera de muestra conforme al protocolo informado: prueba
+aleatoria por canción, GroupKFold de tres folds por artista principal y holdout agrupado
+independiente en Notebook 04c. Estos protocolos responden preguntas distintas. Las estadísticas,
+el ranking retrospectivo y el clustering no demuestran utilidad comercial. La pauta EP3 evalúa
+optimización, ensambles, generalización y selección; su banda de 80\% no es un requisito de
+accuracy para esta regresión.

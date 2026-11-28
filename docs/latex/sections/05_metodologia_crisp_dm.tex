@@ -12,19 +12,18 @@ lineal.
 \toprule
 Fase & Aplicación & Estado \\
 \midrule
-Business Understanding & Problema, interesados, objetivos, KPIs y restricciones & Completada
-inicialmente \\
-Data Understanding & Fuente, diccionario, calidad inicial y distribuciones & Completada inicialmente \\
-Data Preparation & Índice, fila inválida, consolidación de IDs y géneros múltiples & Completada
-inicialmente \\
-Modeling & Líneas base y regresiones justificadas & Pendiente \\
-Evaluation & MAE, RMSE, $R^2$, utilidad, errores por grupos y robustez temporal & Pendiente \\
-Deployment & Repositorio reproducible, informe y presentación & En construcción \\
+Business Understanding & Problema, usuarios, objetivos, KPIs y restricciones & Documentada \\
+Data Understanding & Fuente, diccionario, calidad y distribuciones & Completada \\
+Data Preparation & Fila inválida, consolidación de IDs y géneros múltiples & Completada \\
+Modeling & Dummy, Ridge, árbol, Random Forest con búsqueda de parámetros y K-Means/PCA & Completada para la evaluación \\
+Evaluation & Métricas aleatorias, GroupKFold, holdout agrupado, segmentos y KPI retrospectivo & Completada con límites \\
+Deployment & Informe, notebooks y presentación reproducibles & No desplegado; entrega académica \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 La separación entre notebooks refleja responsabilidades: \code{01_data_understanding.ipynb}
 documenta negocio y diagnóstico; \code{02_data_preparation.ipynb} transforma la fuente;
-\code{03_exploratory_analysis.ipynb} estudia canciones únicas. La lógica común se implementa en
-\code{src/spotify_popularity/} y se verifica en \code{tests/}.
+\code{03_exploratory_analysis.ipynb} estudia canciones únicas; 04a–04c evalúan modelos y
+\code{05_model_comparison.ipynb} integra comparaciones, segmentación y clustering. Las
+transformaciones reutilizables se implementan en \code{src/spotify_popularity/}.

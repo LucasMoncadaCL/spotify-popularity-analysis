@@ -1,9 +1,12 @@
 \section{Limitaciones y matriz de riesgos técnicos}
 
 Las principales limitaciones son: captura histórica sin fecha, objetivo dinámico e imperfecto,
-muestra balanceada artificialmente, variables contextuales ausentes, análisis observacional sin
-causalidad y falta de una evaluación fuera de muestra. También se desconoce si el conjunto cubre de
-forma homogénea regiones, periodos, idiomas y niveles de exposición.
+muestra balanceada artificialmente, variables contextuales ausentes y análisis observacional sin
+causalidad. Hay evaluación fuera de muestra aleatoria y por artistas principales, pero no una
+evaluación temporal ni prospectiva. El holdout agrupado independiente de Notebook 04c evalúa Ridge y
+árbol, no Random Forest; GroupKFold sí incluye RF, pero compara candidatos fijados y solo tiene tres
+folds. También se desconoce si el conjunto cubre homogéneamente regiones, periodos, idiomas y niveles
+de exposición.
 
 \begin{table}[H]
 \centering
@@ -15,19 +18,23 @@ forma homogénea regiones, periodos, idiomas y niveles de exposición.
 Riesgo & Impacto & Probabilidad & Mitigación \\
 \midrule
 Leakage o memorización por \code{track_id} & Alto & Alta si se incluye & Excluir del diseño; conservar para trazabilidad \\
-Memorización por artista & Alto & Alta & Comparar partición aleatoria con grupos por artista; controlar encoding \\
+Memorización por artista & Alto & Alta & Comparar test aleatorio con GroupKFold y holdout agrupado; reconocer solapamiento de artistas secundarios \\
 Deriva temporal & Alto & Alta & Obtener fechas, validar temporalmente y monitorear desempeño \\
 Muestra no representativa & Alto & Alta & Limitar generalización; documentar cobertura y reponderar solo con marco válido \\
 Variables omitidas & Alto & Alta & Incorporar contexto trazable; no interpretar causalmente \\
 Multicolinealidad de audio & Medio & Alta & Escalar, regularizar y diagnosticar coeficientes \\
 Géneros multietiqueta & Medio & Alta & Multi-hot, soporte explícito y métricas no excluyentes \\
 Extremos válidos confundidos con errores & Medio & Media & Validación puntual y análisis de sensibilidad \\
-Desempeño desigual por segmentos & Alto & Media & Evaluar errores por género, explicit y artistas vistos/no vistos \\
+Desempeño desigual por segmentos & Alto & Media & Reportar MAE y soporte por popularidad y grupos disponibles; no ocultar la cola pequeña de $\geq70$ \\
 Sobreconfianza de negocio & Alto & Media & Revisión humana, documentación y límites de uso \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 Probabilidad e impacto son evaluaciones cualitativas para priorizar controles, no frecuencias
-estimadas. Deben revisarse cuando existan particiones, modelo, datos temporales y contexto de uso
-concreto.
+estimadas. Deben revisarse cuando cambien los datos, el protocolo o el contexto de uso.
+
+Las evaluaciones agrupadas reducen parte de la incertidumbre sobre artistas principales no vistos,
+pero no miden deriva temporal ni artistas sin colaboradores compartidos. Las brechas MAE de RF
+(6,133 aleatoria; 8,060 agrupada) son descriptivas, no pruebas de significancia. Mantener revisión
+humana y métricas por segmento.

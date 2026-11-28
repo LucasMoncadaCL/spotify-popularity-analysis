@@ -1,0 +1,29 @@
+{
+  "source_sha256": "b202fa49909b2d5cef71a04b1d21243cfeb36414535f2ca9272aa646721177bd",
+  "train_sha256": "6afc73fa049b6d6101a8d3a24e73dd6c7b95032f70dfcb84cd78720837f57c65",
+  "test_sha256": "7270ff57b6fb81215fba2f834942d194183e3854ccac935a65e5a03f7888b318",
+  "train_tracks": 71792,
+  "test_tracks": 17948,
+  "seed": 42,
+  "n_splits": 3,
+  "random_cv": "KFold(shuffle=True, random_state=42)",
+  "group_cv": "GroupKFold(shuffle=False), artista principal strip/casefold",
+  "n_jobs_outer": 6,
+  "n_jobs_forest": 1,
+  "inner_max_num_threads": 1,
+  "python": "3.12.14",
+  "sklearn": "1.9.0",
+  "pandas": "2.3.3",
+  "numpy": "2.5.3",
+  "elapsed_seconds": 1021.5712690999972,
+  "candidates": {
+    "Dummy mediana": "DummyRegressor(strategy='median')",
+    "Ridge": "Pipeline(steps=[('preprocessing',\n                 ColumnTransformer(sparse_threshold=1.0,\n                                   transformers=[('numeric', StandardScaler(),\n                                                  ['duration_ms',\n                                                   'danceability', 'energy',\n                                                   'loudness', 'speechiness',\n                                                   'acousticness',\n                                                   'instrumentalness',\n                                                   'liveness', 'valence',\n                                                   'tempo']),\n                                                 ('categorical',\n                                                  OneHotEncoder(handle_unknown='ignore'),\n                                                  ['key', 'mode',\n                                                   'time_signature',\n                                                   'explicit']),\n                                                 ('genres', GenreBinarizer(),\n                                                  ['track_genres'])])),\n                ('model', Ridge(alpha=0.1))])",
+    "Árbol": "Pipeline(steps=[('preprocessing',\n                 ColumnTransformer(sparse_threshold=1.0,\n                                   transformers=[('numeric', StandardScaler(),\n                                                  ['duration_ms',\n                                                   'danceability', 'energy',\n                                                   'loudness', 'speechiness',\n                                                   'acousticness',\n                                                   'instrumentalness',\n                                                   'liveness', 'valence',\n                                                   'tempo']),\n                                                 ('categorical',\n                                                  OneHotEncoder(handle_unknown='ignore'),\n                                                  ['key', 'mode',\n                                                   'time_signature',\n                                                   'explicit']),\n                                                 ('genres', GenreBinarizer(),\n                                                  ['track_genres'])])),\n                ('model',\n                 DecisionTreeRegressor(max_depth=15, min_samples_leaf=20,\n                                       random_state=42))])",
+    "Random Forest": "Pipeline(steps=[('preprocessing',\n                 ColumnTransformer(sparse_threshold=1.0,\n                                   transformers=[('numeric', StandardScaler(),\n                                                  ['duration_ms',\n                                                   'danceability', 'energy',\n                                                   'loudness', 'speechiness',\n                                                   'acousticness',\n                                                   'instrumentalness',\n                                                   'liveness', 'valence',\n                                                   'tempo']),\n                                                 ('categorical',\n                                                  OneHotEncoder(handle_unknown='ignore'),\n                                                  ['key', 'mode',\n                                                   'time_signature',\n                                                   'explicit']),\n                                                 ('genres', GenreBinarizer(),\n                                                  ['track_genres'])])),\n                ('model', RandomForestRegressor(n_jobs=1, random_state=42))])"
+  },
+  "lucas_cv_sha256": "b373d4fd22625fe88d674afc0a82383c3566306abc51c07d527aff2de2d436b5",
+  "lucas_test_sha256": "7bf27bc71cf49e37386a784ab98a9a403d91d8c0d39858b5ec2ffbc22b59af16",
+  "test_evaluation": "Reutiliza CSV de Lucas; IE11 no reajusta ni predice sobre prueba.",
+  "selection_limit": "Diagnóstico de candidato preseleccionado, no CV anidada."
+}

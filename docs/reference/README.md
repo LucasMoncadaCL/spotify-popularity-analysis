@@ -7,3 +7,5 @@ proyecto. No contiene resultados generados.
   Evaluación Parcial 1.
 - `EP2_Instrucciones_y_Pauta_PRESENTACION_Estudiante.pdf`: copia de la pauta oficial de
   la Evaluación Parcial 2, usada por el equipo para revisar el plan, la entrega y la defensa.
+- `EP3_Instrucciones_y_Pauta_PRESENTACION_Estudiante.pdf`: pauta oficial de la Evaluación Parcial
+  3, usada como fuente de los indicadores IE9–IE12 y sus ponderaciones.
